@@ -1,6 +1,49 @@
+
+.scrollvelocity-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  width: 100vw;
+  height: 48px;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+  background: transparent;
+}
+
+.custom-scroll-text {
+  pointer-events: auto;
+  width: 100vw;
+  min-height: 40px;
+  background: transparent;
+  color: #fff !important;
+  font-weight: 600;
+  text-shadow: 0 1px 8px #000, 0 0 2px #000;
+}
+
+.custom-scroll-text {
+  pointer-events: auto;
+}
+
 .App {
   text-align: center;
   overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+.orb-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  background: #0D0716;
 }
 
 .App-logo {
@@ -15,7 +58,7 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background: transparent;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -24,10 +67,12 @@
   font-size: calc(10px + 2vmin);
   color: white;
   overflow-x: hidden;
+  position: relative;
+  z-index: 2;
 }
 
 .App-link {
-  color: #61dafb;
+  color: #61dafb;        
 }
 
 @keyframes App-logo-spin {
@@ -37,8 +82,4 @@
   to {
     transform: rotate(360deg);
   }
-}
-
-.App-link {
-    margin-bottom: 2rem;
 }

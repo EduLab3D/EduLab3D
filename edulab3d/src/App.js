@@ -1,11 +1,14 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import logo from './logo.svg';
 import TextType from './components/TextType';
 import CardNav from './components/CardNav';
+import Orb from './components/Orb';
 import ScrollVelocity from './components/ScrollVelocity';
+import About from './pages/About';
+import Maker from './pages/Maker';
 import './App.css';
-
-function App() {
+function Home() {
     const messages = [
         'Hello!',
         'Welcome to join our Universe, EduLab3D!',
@@ -20,8 +23,8 @@ function App() {
             bgColor: "#0D0716",
             textColor: "#fff",
             links: [
-                { label: "EduLab3D?", ariaLabel: "What is EduLab3D?" },
-                { label: "Maker", ariaLabel: "Who is Maker?" },
+                { label: "EduLab3D?", ariaLabel: "What is EduLab3D?", href: "/about" },
+                { label: "Maker", ariaLabel: "Who is Maker?", href: "/maker" },
             ]
         },
         {
@@ -46,6 +49,14 @@ function App() {
 
     return (
         <div className="App">
+            <div className="orb-bg">
+                <Orb
+                    hoverIntensity={0.26}
+                    rotateOnHover={true}
+                    hue={61}
+                    forceHoverState={true}
+                />
+            </div>
             <header className="App-header">
                 <CardNav
                     logo={logo}
@@ -71,15 +82,28 @@ function App() {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    Go to Main page
+                    Get Started
                 </a>
                 <ScrollVelocity
-                    texts={['EduLab3D, 3D science experiment  EduLab3D, 3D science experiment', 'DevLog & waxifyx DevLog & waxifyx DevLog & waxifyx DevLog & waxifyx']}
+                    texts={['EduLab3D, 3D science experiment  EduLab3D, 3D science experiment, EduLab3D', 'DevLog DevLog & waxifyx DevLog & waxifyx DevLog & waxifyx Hayule & Doyoon']}
                     velocity={120}
                     className="custom-scroll-text"
                 />
             </header>
         </div>
+    );
+}
+
+function App() {
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/maker" element={<Maker />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
     );
 }
 
