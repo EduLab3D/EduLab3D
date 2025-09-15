@@ -28,19 +28,19 @@ function useElementWidth(ref) {
 }
 
 export const ScrollVelocity = ({
-                                   scrollContainerRef,
-                                   texts = [],
-                                   velocity = 100,
-                                   className = '',
-                                   damping = 50,
-                                   stiffness = 400,
-                                   numCopies = 12, // 기본값을 12로 늘림
-                                   velocityMapping = { input: [0, 1000], output: [0, 5] },
-                                   parallaxClassName = 'parallax',
-                                   scrollerClassName = 'scroller',
-                                   parallaxStyle,
-                                   scrollerStyle
-                               }) => {
+    scrollContainerRef,
+    texts = [],
+    velocity = 100,
+    className = '',
+    damping = 50,
+    stiffness = 400,
+    numCopies = 12, // 기본값을 12로 늘림
+    velocityMapping = { input: [0, 1000], output: [0, 5] },
+    parallaxClassName = 'parallax',
+    scrollerClassName = 'scroller',
+    parallaxStyle,
+    scrollerStyle
+}) => {
     function VelocityText({
                               children,
                               baseVelocity = velocity,
