@@ -9,15 +9,10 @@ function Home() {
  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // 화면 크기 기준 (예: 768px 이하를 모바일로 간주)
     const checkDevice = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-
-    // 처음 실행
     checkDevice();
-
-    // 화면 크기 바뀔 때마다 실행
     window.addEventListener("resize", checkDevice);
 
     // cleanup
@@ -99,22 +94,6 @@ function Home() {
                 >
                     Get Started
                 </a>
-
-                {isMobile ? 
-                    <ScrollVelocity
-                        texts={['EduLab3D, 3D science experiment ', 'DevLog & waxifyx    Hayule & Doyoon']}
-                        velocity={120}
-                        className="custom-scroll-text"
-                    />
-                : 
-                    <ScrollVelocity
-                        texts={['EduLab3D, 3D science experiment  EduLab3D, 3D science experiment', 'DevLog & waxifyx Hayule & Doyoon in Jungheung Middle School']}
-                        velocity={120}
-                        className="custom-scroll-text"
-                    />}
-                
-                
-                
             </header>
         </div>
     );

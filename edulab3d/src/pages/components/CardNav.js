@@ -162,7 +162,7 @@ const CardNav = ({
                         <div className="hamburger-line" />
                     </div>
 
-                    <div className="logo-container">
+                    <div className="logo-container" style={{cursor: 'pointer'}} onClick={() => { window.location.hash = '/'; }}>
                         <img src={logo} alt={logoAlt} className="logo" />
                     </div>
 

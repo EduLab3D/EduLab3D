@@ -1,7 +1,7 @@
 import React from 'react';
 import Orb from './components/Orb';
 import CardNav from './components/CardNav';
-import logo from './image/logo.png';
+import logo from './image/logo.svg';
 function About() {
   const items = [
         {
