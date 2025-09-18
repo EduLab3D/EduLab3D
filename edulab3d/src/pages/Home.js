@@ -1,23 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import logo from './image/logo.svg';
 import TextType from './components/TextType';
 import CardNav from './components/CardNav';
 import Orb from './components/Orb';
-import ScrollVelocity from './components/ScrollVelocity';
 
 function Home() {
- const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkDevice = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    checkDevice();
-    window.addEventListener("resize", checkDevice);
-
-    // cleanup
-    return () => window.removeEventListener("resize", checkDevice);
-  }, []);
 
     const messages = [
         'Hello!',

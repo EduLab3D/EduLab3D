@@ -53,8 +53,8 @@ const Maker = () => {
         }
     ];
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%)" }}>
-      <header className="App-header">
+  <div style={{ background: "#181A20", position: "relative", minHeight: "100vh" }}>
+  <header className="App-header" style={{ margin: 0, padding: 0, minHeight: 0 }}>
         <CardNav
           logo={logo}
           logoAlt="Company Logo"
@@ -66,9 +66,9 @@ const Maker = () => {
           ease="power3.out"
         />
       </header>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", gap: "2rem", flexWrap: "wrap", marginTop: "2rem" }}>
+  <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", gap: "2rem", flexWrap: "wrap", paddingTop: "140px" }}>
         {[developer, developer2].map((dev, idx) => (
-          <div key={dev.name} className="dev-card" style={{ background: "#fff", borderRadius: "1.5rem", boxShadow: "0 8px 32px rgba(60,60,120,0.15)", padding: "2.5rem 2rem", maxWidth: 350, textAlign: "center", transition: "box-shadow 0.3s", position: "relative" }}>
+          <div key={dev.name} className="dev-card" style={{ background: "rgba(255,255,255,0.85)", borderRadius: "1.5rem", boxShadow: "0 8px 32px rgba(60,60,120,0.12)", padding: "2.5rem 2rem", width: "350px", height: "420px", textAlign: "center", transition: "box-shadow 0.3s", position: "relative", display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <img src={dev.avatar} alt="avatar" style={{ width: 96, height: 96, borderRadius: "50%", objectFit: "cover", marginBottom: 16, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }} />
             <h2 style={{ margin: "0 0 8px", fontWeight: 700, fontSize: "1.5rem", color: "#222" }}>{dev.name}</h2>
             <h4 style={{ margin: "0 0 16px", fontWeight: 400, color: "#666" }}>{dev.role}</h4>
