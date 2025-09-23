@@ -72,8 +72,18 @@
 }
 
 .App-link {
-  color: #61dafb;        
+  color: #61dafb;
   margin-bottom: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+.app-link-icon {
+  display: inline-block;
+  vertical-align: middle;
+  color: currentColor; /* inherit */
 }
 
 @keyframes App-logo-spin {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import About from './pages/About';
-import Maker from './pages/Maker';
+import Creators from './pages/Creators';
 import Home from './pages/Home';
 import './App.css';
 
@@ -11,7 +11,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/maker" element={<Maker />} />
+                    <Route path="/creators" element={<Creators />} />
                 </Routes>
         </HashRouter>
         

@@ -10,7 +10,7 @@ function About() {
             textColor: "#fff",
             links: [
                 { label: "EduLab3D?", ariaLabel: "What is EduLab3D?", href: "/#/about" },
-                { label: "Maker", ariaLabel: "Who is Maker?", href: "/#/maker" },
+                { label: "Creators", ariaLabel: "Who are the creators?", href: "/#/creators" },
             ]
         },
         {

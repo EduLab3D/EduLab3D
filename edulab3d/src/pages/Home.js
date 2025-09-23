@@ -2,6 +2,7 @@ import logo from './image/logo.svg';
 import TextType from './components/TextType';
 import CardNav from './components/CardNav';
 import Orb from './components/Orb';
+import GooeyNav from './GooeyNav/GooeyNav';
 
 function Home() {
 
@@ -20,7 +21,7 @@ function Home() {
             textColor: "#fff",
             links: [
                 { label: "EduLab3D?", ariaLabel: "What is EduLab3D?", href: "/#/about" },
-                { label: "Maker", ariaLabel: "Who is Maker?", href: "/#/maker" },
+                { label: "Creators", ariaLabel: "Who are the creators?", href: "/#/creators" }
             ]
         },
         {
@@ -64,7 +65,6 @@ function Home() {
                     buttonTextColor="#fff"
                     ease="power3.out"
                 />
-                <img src={logo} className="App-logo" alt="logo" />
                 <TextType
                     text={messages}
                     typingSpeed={60}
@@ -72,14 +72,10 @@ function Home() {
                     deletingSpeed={30}
                     cursorCharacter="|"
                 />
-                <a
-                    className="App-link"
-                    href="/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Get Started
-                </a>
+                <GooeyNav
+                    items={[{ label: 'Get Started', href: '/#/experiments' }]}
+                    containerStyle={{ '--goo-color': '#ffffff', '--goo-text-color': 'black' }}
+                />
             </header>
         </div>
     );
