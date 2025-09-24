@@ -31,6 +31,10 @@
     overflow: hidden;
 }
 
+.card-nav-content::-webkit-scrollbar {
+    display: none;
+}
+
 .card-nav-top {
     position: absolute;
     top: 0;

@@ -75,6 +75,11 @@ function Home() {
                 <GooeyNav
                     items={[{ label: 'Get Started', href: '/#/experiments' }]}
                     containerStyle={{ '--goo-color': '#ffffff', '--goo-text-color': 'black' }}
+                    onItemClick={(item) => {
+                        setTimeout(() => {
+                            window.location.href = item.href;
+                        }, 1500);
+                    }}
                 />
             </header>
         </div>

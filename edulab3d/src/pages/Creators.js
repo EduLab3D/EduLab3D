@@ -5,7 +5,7 @@ import ProfileCard from './ProfileCard/ProfileCard';
 
 const developer = {
   name: 'DEVLOG',
-  role: 'Frontend Developer',
+  role: 'Developer',
   bio: '안녕하십니까! EduLab3D 총괄 개발자 DEVLOG입니다! 혹시 버그를 발견하셨다면, support@edulab3d.tech로 알려주시면 바로 수정하겠습니다. 감사합니다!',
   avatar: logo,
   socials: [
@@ -16,7 +16,7 @@ const developer = {
 };
 const developer2 = {
   name: 'waxifyx',
-  role: 'Science Experiment Developer',
+  role: 'Developer',
   bio: '밀랍칠하는중...',
   avatar: logo,
   socials: [
@@ -51,7 +51,7 @@ const Creators = () => {
       textColor: '#fff',
       links: [
         { label: 'Email', ariaLabel: 'Email us', href: 'mailto:support@edulab3d.tech' },
-        { label: 'Github', ariaLabel: 'THIS PROJECT IS OPEN SOURCE!!!!!!!!!!!', href: 'https://github.com/EduLab3D/EduLab3D' },
+        { label: 'Github', ariaLabel: 'This project is open source', href: 'https://github.com/EduLab3D/EduLab3D' },
       ]
     }
   ];

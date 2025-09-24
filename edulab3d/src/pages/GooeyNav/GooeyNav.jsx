@@ -9,7 +9,8 @@ const GooeyNav = ({
   particleR = 100,
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
-  initialActiveIndex = 0
+  initialActiveIndex = 0,
+  onItemClick
 }) => {
   const containerRef = useRef(null);
   const navRef = useRef(null);
@@ -95,7 +96,6 @@ const GooeyNav = ({
 
   const handleClick = (e, index) => {
     const liEl = e.currentTarget;
-    if (activeIndex === index) return;
 
     setActiveIndex(index);
     updateEffectPosition(liEl);
@@ -114,6 +114,13 @@ const GooeyNav = ({
 
     if (filterRef.current) {
       makeParticles(filterRef.current);
+    }
+
+    const item = items[index];
+    if (onItemClick) {
+      e.preventDefault();
+      onItemClick(item, index);
+    } else if (item.href) {
     }
   };
 

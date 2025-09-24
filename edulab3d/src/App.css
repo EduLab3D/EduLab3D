@@ -83,7 +83,7 @@
 .app-link-icon {
   display: inline-block;
   vertical-align: middle;
-  color: currentColor; /* inherit */
+  color: currentColor;
 }
 
 @keyframes App-logo-spin {

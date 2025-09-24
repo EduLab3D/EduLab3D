@@ -68,6 +68,7 @@
   z-index: 5; 
   color: black !important; 
   text-shadow: none !important;
+  text-decoration: none;
 }
 
 .gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
