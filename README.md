@@ -1,1 +1,0 @@
-# EduLab3D
