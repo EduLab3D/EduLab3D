@@ -1,7 +1,0 @@
-.profile-card{ background: rgba(255,255,255,0.95); border-radius:1.25rem; padding:1.6rem; width:320px; box-shadow:0 8px 32px rgba(20,20,40,0.08); text-align:center; display:flex; flex-direction:column; gap:10px; }
-.profile-avatar{ width:88px; height:88px; border-radius:50%; object-fit:cover; margin:0 auto; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
-.profile-name{ margin:0; font-size:1.25rem; font-weight:700; color:#222; }
-.profile-role{ color:#666; font-size:0.95rem; }
-.profile-bio{ color:#444; font-size:0.95rem; margin-top:6px; }
-.profile-socials{ display:flex; justify-content:center; gap:12px; margin-top:6px; }
-.profile-social{ width:40px; height:40px; display:inline-flex; align-items:center; justify-content:center; border-radius:50%; background:#f5f6fa; box-shadow:0 1px 4px rgba(0,0,0,0.06); text-decoration:none; }
