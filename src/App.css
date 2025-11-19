@@ -29,6 +29,32 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  will-change: transform, filter, opacity;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stage {
+    animation: hero-landing 900ms ease forwards;
+    animation-delay: 140ms;
+  }
+}
+
+@keyframes hero-landing {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+    filter: blur(16px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .nav-shell {
