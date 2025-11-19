@@ -27,8 +27,8 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     accent: '#f97316',
     tagline: 'Mission, story, and the humans building EduLab3D.',
     links: [
-      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '#/about' },
-      { label: 'Creators', description: 'Meet the students behind the experiments.', href: '#/creators' },
+      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '/about' },
+      { label: 'Creators', description: 'Meet the students behind the experiments.', href: '/creators' },
     ],
   },
   {
@@ -36,8 +36,8 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     accent: '#a855f7',
     tagline: 'Curated simulations grouped by difficulty and topic.',
     links: [
-      { label: 'By level', description: 'Pick Beginner, Intermediate, or Advanced.', href: '#/experiments?view=levels' },
-      { label: 'All experiments', description: 'Browse the full catalogue at once.', href: '#/experiments' },
+      { label: 'By level', description: 'Pick Beginner, Intermediate, or Advanced.', href: '/experiments?view=levels' },
+      { label: 'All experiments', description: 'Browse the full catalogue at once.', href: '/experiments' },
     ],
   },
   {
