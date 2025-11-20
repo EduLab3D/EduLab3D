@@ -1,8 +1,11 @@
-import { useMemo, useState } from 'react'
+import { Suspense, useMemo, useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { Link, Route, Routes} from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
+import type { Group, Mesh } from 'three'
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
@@ -150,6 +153,44 @@ const CREATOR_STACK = [
     body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pretium mollis risus vitae facilisis.',
   },
 ]
+
+type WaterPhaseId = 'ice' | 'liquid' | 'vapor'
+
+const WATER_PHASES: Record<WaterPhaseId, { label: string; description: string; color: string; scale: number; vaporIntensity: number }> = {
+  ice: {
+    label: 'Solid (Ice)',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere augue elit, a semper libero tempor vitae.',
+    color: '#8ecae6',
+    scale: 0.85,
+    vaporIntensity: 0.05,
+  },
+  liquid: {
+    label: 'Liquid',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur dignissim libero nec orci eleifend venenatis.',
+    color: '#38bdf8',
+    scale: 1.1,
+    vaporIntensity: 0.2,
+  },
+  vapor: {
+    label: 'Gas (Vapor)',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque viverra purus eget augue porta scelerisque.',
+    color: '#f472b6',
+    scale: 1.35,
+    vaporIntensity: 0.45,
+  },
+}
+
+const resolveWaterPhase = (temperature: number, pressure: number): WaterPhaseId => {
+  if (temperature <= 0 && pressure >= 0.5) {
+    return 'ice'
+  }
+
+  if (temperature >= 100 && pressure <= 2.4) {
+    return 'vapor'
+  }
+
+  return 'liquid'
+}
 
 function HomePage() {
   return (
@@ -418,6 +459,172 @@ function CreatorsPage() {
   )
 }
 
+type PhaseConfig = (typeof WATER_PHASES)[WaterPhaseId]
+
+function PhaseBlob({ phase }: { phase: PhaseConfig }) {
+  const meshRef = useRef<Mesh | null>(null)
+  const wobbleRef = useRef(0)
+
+  useFrame((_, delta) => {
+    if (!meshRef.current) return
+    wobbleRef.current += delta * 0.8
+    const eased = meshRef.current.scale.x + (phase.scale - meshRef.current.scale.x) * Math.min(delta * 6, 1)
+    meshRef.current.scale.setScalar(eased + Math.sin(wobbleRef.current) * 0.02)
+    meshRef.current.rotation.y += delta * 0.25
+    meshRef.current.rotation.x = Math.sin(wobbleRef.current * 0.5) * 0.15
+  })
+
+  return (
+    <mesh ref={meshRef} castShadow>
+      <icosahedronGeometry args={[0.9, 3]} />
+      <meshStandardMaterial
+        color={phase.color}
+        metalness={phase.label === 'Solid (Ice)' ? 0.15 : 0.05}
+        roughness={phase.label === 'Solid (Ice)' ? 0.4 : 0.15}
+        emissive={phase.color}
+        emissiveIntensity={0.12}
+      />
+    </mesh>
+  )
+}
+
+function VaporParticles({ intensity }: { intensity: number }) {
+  const groupRef = useRef<Group | null>(null)
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 36 }, (_, index) => ({
+        id: index,
+        position: [
+          (Math.random() - 0.5) * 2,
+          Math.random() * 1.6 + 0.3,
+          (Math.random() - 0.5) * 2,
+        ] as [number, number, number],
+        size: Math.random() * 0.08 + 0.02,
+      })),
+    [],
+  )
+
+  useFrame((_, delta) => {
+    if (!groupRef.current) return
+    groupRef.current.rotation.y += delta * 0.08
+  })
+
+  return (
+    <group ref={groupRef} renderOrder={-1}>
+      {particles.map((particle) => (
+        <mesh key={particle.id} position={particle.position} scale={particle.size} castShadow={false} receiveShadow={false}>
+          <sphereGeometry args={[1, 8, 8]} />
+          <meshStandardMaterial color="#ffffff" transparent opacity={Math.min(intensity, 0.8)} depthWrite={false} />
+        </mesh>
+      ))}
+    </group>
+  )
+}
+
+function ThermalPlate() {
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.9, 0]} receiveShadow>
+      <cylinderGeometry args={[1.5, 1.8, 0.08, 64]} />
+      <meshStandardMaterial color="#111018" metalness={0.2} roughness={0.7} />
+    </mesh>
+  )
+}
+
+function WaterStatePage() {
+  const [temperature, setTemperature] = useState(24)
+  const [pressure, setPressure] = useState(1)
+  const phaseId = useMemo(() => resolveWaterPhase(temperature, pressure), [temperature, pressure])
+  const phase = WATER_PHASES[phaseId]
+
+  return (
+    <div className="page-shell water-page">
+      <header className="page-header">
+        <span className="page-eyebrow">Water State Lab</span>
+        <div className="page-header__content">
+          <h1 className="page-title">Dial temperature and pressure, watch the phase respond.</h1>
+          <p className="page-lede">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque mattis, orci at elementum placerat, nisi lorem facilisis risus, ut
+            feugiat lorem ipsum ut massa.
+          </p>
+        </div>
+        <span className="placeholder-pill" aria-label="All experiment copy uses lorem ipsum placeholders">
+          Lorem ipsum placeholder copy
+        </span>
+      </header>
+
+      <section className="water-lab__grid">
+        <article className="glass-panel water-lab__panel">
+          <div>
+            <p className="water-phase__eyebrow">Current Phase</p>
+            <h2 className="water-phase__title">{phase.label}</h2>
+            <p className="water-phase__copy">{phase.description}</p>
+          </div>
+
+          <div className="water-metrics">
+            <div className="water-metric">
+              <p>Temperature</p>
+              <strong>{temperature.toFixed(0)}°C</strong>
+            </div>
+            <div className="water-metric">
+              <p>Pressure</p>
+              <strong>{pressure.toFixed(2)} atm</strong>
+            </div>
+          </div>
+
+          <div className="water-controls">
+            <label>
+              <span>Temperature ({temperature.toFixed(0)}°C)</span>
+              <input
+                type="range"
+                min="-40"
+                max="140"
+                value={temperature}
+                onChange={(event) => setTemperature(Number(event.target.value))}
+              />
+            </label>
+            <label>
+              <span>Pressure ({pressure.toFixed(2)} atm)</span>
+              <input
+                type="range"
+                min="0.5"
+                max="3"
+                step="0.05"
+                value={pressure}
+                onChange={(event) => setPressure(Number(event.target.value))}
+              />
+            </label>
+          </div>
+
+          <div className="water-phase__legend">
+            <span className="water-phase__pill">Phase indicator updates with Lorem Ipsum copy.</span>
+            <Link to="/experiments" className="water-phase__cta">
+              Browse other experiments ↗
+            </Link>
+          </div>
+        </article>
+
+        <article className="glass-panel water-lab__panel water-lab__panel--scene">
+          <div className="water-lab__canvas">
+            <Canvas camera={{ position: [0, 1.4, 3.2], fov: 45 }} shadows>
+              <ambientLight intensity={0.55} />
+              <directionalLight position={[2.5, 3, 2]} intensity={1.1} castShadow />
+              <Suspense fallback={null}>
+                <PhaseBlob phase={phase} />
+                <VaporParticles intensity={phase.vaporIntensity} />
+                <ThermalPlate />
+                <Environment preset="city" />
+              </Suspense>
+              <ContactShadows position={[0, -0.9, 0]} opacity={0.45} blur={1.4} far={3} />
+              <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.2} minPolarAngle={0.3} />
+            </Canvas>
+          </div>
+          <p className="water-lab__hint">Three.js scene reacts to your slider inputs.</p>
+        </article>
+      </section>
+    </div>
+  )
+}
+
 function App() {
   return (
     <>
@@ -465,6 +672,7 @@ function App() {
         <Route path="/experiments" element={<ExperimentsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/creators" element={<CreatorsPage />} />
+        <Route path="/experiments/state-changes" element={<WaterStatePage />} />
       </Routes>
     </>
   )
