@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, Route, Routes, Navigate} from 'react-router-dom'
+import { Link, Route, Routes} from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
@@ -461,11 +461,10 @@ function App() {
       </div>
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<HomePage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/creators" element={<CreatorsPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   )
