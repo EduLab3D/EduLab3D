@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/assets/logo-DmhwriiM.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduLab3D - Virtual Science Experiments</title>
+    <script type="module" crossorigin src="/assets/index-6yelgu6l.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DtMd1VOT.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      ;(function(l) {
+        if (l.search && l.search[0] === '?' && l.search[1] === '/') {
+          var decoded = l.search
+            .slice(2)
+            .split('&')
+            .map(function(segment) {
+              return segment.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(null, null, '/' + decoded + l.hash)
+        }
+      })(window.location)
+    </script>
+  </body>
+</html>
