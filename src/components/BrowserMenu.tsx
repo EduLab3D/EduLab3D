@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { Link } from 'react-router-dom'
 import './BrowserMenu.css'
 
 type BrowserMenuLink = {
@@ -27,8 +28,8 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     accent: '#f97316',
     tagline: 'Mission, story, and the humans building EduLab3D.',
     links: [
-      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '#/about' },
-      { label: 'Creators', description: 'Meet the students behind the experiments.', href: '#/creators' },
+      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '/about' },
+      { label: 'Creators', description: 'Meet the students behind the experiments.', href: '/creators' },
     ],
   },
   {
@@ -36,8 +37,8 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     accent: '#a855f7',
     tagline: 'Curated simulations grouped by difficulty and topic.',
     links: [
-      { label: 'By level', description: 'Pick Beginner, Intermediate, or Advanced.', href: '#/experiments?view=levels' },
-      { label: 'All experiments', description: 'Browse the full catalogue at once.', href: '#/experiments' },
+      { label: 'By level', description: 'Pick Beginner, Intermediate, or Advanced.', href: '/experiments?view=levels' },
+      { label: 'All experiments', description: 'Browse the full catalogue at once.', href: '/experiments' },
     ],
   },
   {
@@ -80,44 +81,80 @@ export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps)
             <ul className="browser-menu__links">
               {item.links.map((link) => (
                 <li key={link.label} className="browser-menu__link-item">
-                  <a
-                    href={link.href}
-                    className="browser-menu__link"
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noreferrer' : undefined}
-                  >
-                    <span>
-                      <span className="browser-menu__link-label">{link.label}</span>
-                      {link.description && (
-                        <span className={`browser-menu__link-description${link.descriptionSpacer ? ' browser-menu__link-description--spacer' : ''}`}>
-                          {link.description}
-                        </span>
-                      )}
-                    </span>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
+                  {link.external ? (
+                    <a
+                      href={link.href}
+                      className="browser-menu__link"
+                      target="_blank"
+                      rel="noreferrer"
                     >
-                      <path
-                        d="M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M21 21l-4.35-4.35"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
+                      <span>
+                        <span className="browser-menu__link-label">{link.label}</span>
+                        {link.description && (
+                          <span className={`browser-menu__link-description${link.descriptionSpacer ? ' browser-menu__link-description--spacer' : ''}`}>
+                            {link.description}
+                          </span>
+                        )}
+                      </span>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21 21l-4.35-4.35"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </a>
+                  ) : (
+                    <Link to={link.href} className="browser-menu__link">
+                      <span>
+                        <span className="browser-menu__link-label">{link.label}</span>
+                        {link.description && (
+                          <span className={`browser-menu__link-description${link.descriptionSpacer ? ' browser-menu__link-description--spacer' : ''}`}>
+                            {link.description}
+                          </span>
+                        )}
+                      </span>
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path
+                          d="M21 21l-4.35-4.35"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

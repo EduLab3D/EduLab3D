@@ -3,6 +3,8 @@ import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
+import AboutPage from './pages/About'
+import NotFound from './pages/NotFound'
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
@@ -102,9 +104,9 @@ function HomePage() {
             <Link to="/experiments" className="gradient-button">
               <span>Get Started</span>
             </Link>
-            <a href="#/about" className="ghost-button">
+            <Link to="/about" className="ghost-button">
               Learn More
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -249,11 +251,10 @@ function App() {
         style={{ position: 'absolute', top: '1vw', left: 0, right: 0, zIndex: 40, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}
       >
         <div className="nav-shell">
-          <img src={logo} alt="logo" className="nav-logo" />
+          <Link to="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={logo} alt="logo" className="nav-logo" />
+          </Link>
           <div className="nav-links">
-            <Link to="/" className="nav-link">
-              Home
-            </Link>
             <Link to="/experiments" className="nav-link nav-link--icon">
               <span>Browse</span>
               <svg
@@ -287,6 +288,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )

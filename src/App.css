@@ -184,7 +184,7 @@ a {
   font-weight: 600;
   text-decoration: none;
   color: #0b0415;
-  background: linear-gradient(90deg, #c084fc, #ec4899, #38bdf8, #c084fc);
+  background: linear-gradient(90deg, #c084fc, #da77a8, #38bdf8, #c084fc);
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
   display: inline-flex;
