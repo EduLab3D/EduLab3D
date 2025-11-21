@@ -4,6 +4,7 @@ import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
 import AboutPage from './pages/About'
+import CreatorsPage from './pages/Creators'
 import NotFound from './pages/NotFound'
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
@@ -77,7 +78,7 @@ const EXPERIMENTS: Experiment[] = [
 
 function HomePage() {
   return (
-    <div className="hero-stage">
+    <div className="hero-stage page-enter">
       <div
         style={{
           textAlign: 'center',
@@ -141,7 +142,7 @@ function ExperimentsPage() {
   }, [activeLevel, focusFilter, query])
 
   return (
-    <div className="experiments-page">
+    <div className="experiments-page page-enter">
       <header className="experiments-page__hero">
         <p className="experiments-page__eyebrow">Live catalogue</p>
         <h1>Experiments built for curious classrooms.</h1>
@@ -289,6 +290,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/creators" element={<CreatorsPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

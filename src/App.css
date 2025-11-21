@@ -184,35 +184,63 @@ a {
   font-weight: 600;
   text-decoration: none;
   color: #0b0415;
-  background: linear-gradient(90deg, #c084fc, #da77a8, #38bdf8, #c084fc);
-  background-size: 400% 400%;
-  animation: gradient-shift 15s ease infinite;
+  background: #ffffff;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  z-index: 1;
 }
 
 .gradient-button::before,
 .gradient-button::after {
   content: '';
   position: absolute;
-  width: 120%;
-  height: 200%;
-  top: -50%;
-  left: -10%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.45), transparent 65%);
-  filter: blur(20px);
-  opacity: 0.7;
-  mix-blend-mode: screen;
-}
-
-.gradient-button::before {
-  animation: blob-drift 10s ease-in-out infinite;
+  inset: -100%;
+  background: conic-gradient(from 0deg, #c084fc, #da77a8, #38bdf8, #c084fc);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  border-radius: 40%;
+  filter: blur(12px);
 }
 
 .gradient-button::after {
-  animation: blob-drift-secondary 16s ease-in-out infinite;
+  background: conic-gradient(from 180deg, #38bdf8, #c084fc, #da77a8, #38bdf8);
+  mix-blend-mode: hard-light;
+}
+
+.gradient-button:hover::before {
+  animation: fluid-chaos 8s linear infinite;
+}
+
+.gradient-button:hover::after {
+  animation: fluid-chaos-reverse 8s linear infinite;
+}
+
+@keyframes fluid-chaos {
+  0% { transform: rotate(0deg) scale(0.8); }
+  15% { transform: rotate(120deg) scale(1.5) translate(20px, -10px); }
+  30% { transform: rotate(180deg) scale(0.9) translate(-10px, 10px); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes fluid-chaos-reverse {
+  0% { transform: rotate(360deg) scale(0.8); }
+  15% { transform: rotate(240deg) scale(1.5) translate(-20px, -10px); }
+  30% { transform: rotate(180deg) scale(0.9) translate(10px, 10px); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.gradient-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px -5px rgba(192, 132, 252, 0.5);
+  background-color: transparent;
+}
+
+.gradient-button:hover::before,
+.gradient-button:hover::after {
+  opacity: 1;
 }
 
 .ghost-button {
@@ -229,6 +257,7 @@ a {
 .ghost-button:hover {
   border-color: rgba(255, 255, 255, 0.6);
   transform: translateY(-2px);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
 }
 
 .experiments-page {
@@ -280,9 +309,15 @@ a {
   transition: background 0.2s ease, border 0.2s ease;
 }
 
+.experiments-page__filter:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+}
+
 .experiments-page__filter.is-active {
   background: rgba(255, 255, 255, 0.2);
   border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
 }
 
 .experiments-page__grid {
@@ -389,6 +424,7 @@ a {
 .experiment-card__cta:hover {
   transform: translateY(-2px);
   border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
 }
 
 .experiments-search {
@@ -468,6 +504,21 @@ a {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: rgba(255, 255, 255, 0.75);
+}
+
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (max-width: 640px) {

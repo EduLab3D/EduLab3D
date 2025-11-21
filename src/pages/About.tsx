@@ -2,7 +2,7 @@ import '../App.css'
 
 export default function AboutPage() {
   return (
-    <div className="experiments-page">
+    <div className="experiments-page page-enter">
       <header className="experiments-page__hero" style={{ maxWidth: '800px' }}>
         <p className="experiments-page__eyebrow">About Us</p>
         <h1>Empowering the next generation of scientists.</h1>
