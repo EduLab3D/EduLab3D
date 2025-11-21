@@ -632,11 +632,10 @@ function App() {
         style={{ position: 'absolute', top: '1vw', left: 0, right: 0, zIndex: 40, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}
       >
         <div className="nav-shell">
-          <img src={logo} alt="logo" className="nav-logo" />
+          <Link to="/" className="nav-logo-link">
+            <img src={logo} alt="logo" className="nav-logo" />
+          </Link>
           <div className="nav-links">
-            <Link to="/" className="nav-link">
-              Home
-            </Link>
             <Link to="/experiments" className="nav-link nav-link--icon">
               <span>Browse</span>
               <svg
