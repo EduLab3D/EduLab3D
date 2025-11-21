@@ -47,7 +47,7 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     tagline: 'Get help, share feedback, or contribute.',
     taglineSpacer: false,
     links: [
-      { label: 'Email support', description: 'support@edulab3d.tech', descriptionSpacer: true, href: 'mailto:support@edulab3d.tech', external: true},
+      { label: 'Email support', description: 'admin@developerlog.tech', descriptionSpacer: true, href: 'mailto:admin@developerlog.tech', external: true},
       { label: 'GitHub', description: 'Open source repo & issues.', descriptionSpacer: true ,href: 'https://github.com/EduLab3D/EduLab3D', external: true },
     ],
   },
