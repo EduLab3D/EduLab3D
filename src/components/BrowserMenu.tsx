@@ -26,9 +26,9 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
   {
     label: 'About',
     accent: '#f97316',
-    tagline: 'Mission, story, and the humans building EduLab3D.',
+    tagline: 'Mission, story, and the humans building DevLab.',
     links: [
-      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '/about' },
+      { label: 'What is DevLab?', description: 'Why we exist and how the lab works.', href: '/about' },
       { label: 'Creators', description: 'Meet the students behind the experiments.', href: '/creators' },
     ],
   },
@@ -48,14 +48,14 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     taglineSpacer: false,
     links: [
       { label: 'Email support', description: 'admin@developerlog.tech', descriptionSpacer: true, href: 'mailto:admin@developerlog.tech', external: true},
-      { label: 'GitHub', description: 'Open source repo & issues.', descriptionSpacer: true ,href: 'https://github.com/EduLab3D/EduLab3D', external: true },
+      { label: 'GitHub', description: 'Open source repo & issues.', descriptionSpacer: true ,href: 'https://github.com/DevLab/DevLab', external: true },
     ],
   },
 ]
 
 export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps) {
   return (
-    <section className="browser-menu" aria-label="Browse EduLab3D">
+    <section className="browser-menu" aria-label="Browse DevLab">
       <div className="browser-menu__heading">
         <p className="browser-menu__eyebrow">Quick navigation</p>
         <h2 className="browser-menu__title">Browse the lab menu</h2>

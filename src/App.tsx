@@ -212,7 +212,7 @@ function HomePage() {
           <h1>
             Welcome to our Universe,
             <br />
-            EduLab3D!
+            DevLab!
           </h1>
           <p className="hero-lede__description">
             Interactive science experiments built for live class demos.
@@ -365,7 +365,7 @@ function AboutPage() {
   return (
     <div className="page-shell about-page">
       <header className="page-header">
-        <span className="page-eyebrow">About EduLab3D</span>
+        <span className="page-eyebrow">About DevLab</span>
         <div className="page-header__content">
           <h1 className="page-title">A sandbox for every curious classroom.</h1>
           <p className="page-lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae purus nec lectus mollis elementum.</p>
