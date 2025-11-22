@@ -6,7 +6,6 @@ import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
 import CreatorsPage from './pages/Creators'
-import NotFound from './pages/NotFound'
 import type { Group, Mesh } from 'three'
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
@@ -87,39 +86,6 @@ const EXPERIMENTS: Experiment[] = [
   }
 ]
 
-
-
-
-const CREATOR_SHOWCASE = [
-  {
-    name: 'DEVLOG',
-    role: 'Creative Technologist',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pretium ligula risus, nec semper sem iaculis a.',
-    tags: ['PM', 'Front-End', 'Experiments'],
-  },
-  {
-    name: 'WAXIFYX',
-    role: 'Learning Experience Lead',
-    bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus dapibus suscipit justo, non posuere arcu pretium vel.',
-    tags: ['PL', 'FullStack', 'Experiments'],
-  },
-]
-
-const CREATOR_STACK = [
-  {
-    title: 'Toolchain',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc molestie sed ipsum eget feugiat.',
-  },
-  {
-    title: 'Feedback loops',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In hac habitasse platea dictumst.',
-  },
-  {
-    title: 'Pilot partner wishlist',
-    body: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas pretium mollis risus vitae facilisis.',
-  },
-]
-
 type WaterPhaseId = 'ice' | 'liquid' | 'vapor'
 
 const WATER_PHASES: Record<WaterPhaseId, { label: string; description: string; color: string; scale: number; vaporIntensity: number }> = {
@@ -187,8 +153,8 @@ function HomePage() {
             <Link to="/experiments" className="gradient-button">
               <span>Get Started</span>
             </Link>
-            <Link to="/about" className="ghost-button">
-              Learn More
+            <Link to="/creators" className="ghost-button">
+              Meet the Team
             </Link>
           </div>
         </div>
@@ -323,104 +289,6 @@ function ExperimentsPage() {
           ))}
         </div>
       )}
-    </div>
-  )
-}
-
-function AboutPage() {
-  return (
-    <div className="page-shell about-page">
-      <header className="page-header">
-        <span className="page-eyebrow">About EduLab3D</span>
-        <div className="page-header__content">
-          <h1 className="page-title">A sandbox for every curious classroom.</h1>
-          <p className="page-lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae purus nec lectus mollis elementum.</p>
-        </div>
-        <span className="placeholder-pill" aria-label="All sample copy uses lorem ipsum">
-          Lorem ipsum placeholder copy
-        </span>
-      </header>
-
-      <section className="about-metrics">
-        {ABOUT_METRICS.map((metric) => (
-          <article key={metric.label} className="glass-panel metric-card">
-            <span className="metric-card__value">{metric.value}</span>
-            <p className="metric-card__label">{metric.label}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="about-grid">
-        {ABOUT_HIGHLIGHTS.map((highlight) => (
-          <article key={highlight.title} className="glass-panel about-grid__card">
-            <h2>{highlight.title}</h2>
-            <p>{highlight.body}</p>
-          </article>
-        ))}
-      </section>
-
-      <section className="about-timeline">
-        {ABOUT_MILESTONES.map((milestone) => (
-          <article key={milestone.title} className="glass-panel timeline-card">
-            <div className="timeline-card__label">{milestone.label}</div>
-            <div>
-              <h3>{milestone.title}</h3>
-              <p>{milestone.body}</p>
-            </div>
-          </article>
-        ))}
-      </section>
-    </div>
-  )
-}
-
-function CreatorsPage() {
-  return (
-    <div className="page-shell creators-page">
-      <header className="page-header">
-        <span className="page-eyebrow">Creator Studio</span>
-        <div className="page-header__content">
-          <h1 className="page-title">Meet the builders behind the sims.</h1>
-          <p className="page-lede">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec varius varius risus, quis accumsan dolor mattis vel.</p>
-        </div>
-        <span className="placeholder-pill" aria-label="All creator bios are lorem ipsum placeholders">
-          Lorem ipsum placeholder copy
-        </span>
-      </header>
-
-      <section className="creators-grid">
-        {CREATOR_SHOWCASE.map((creator) => (
-          <article key={creator.name} className="glass-panel creator-card">
-            <div className="creator-avatar" aria-hidden="true">
-              {creator.name
-                .split(' ')
-                .map((part) => part[0])
-                .join('')}
-            </div>
-            <div className="creator-card__body">
-              <div className="creator-card__meta">
-                <h2>{creator.name}</h2>
-                <p>{creator.role}</p>
-              </div>
-              <p>{creator.bio}</p>
-              <div className="creator-card__tags">
-                {creator.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="creator-stack">
-        {CREATOR_STACK.map((panel) => (
-          <article key={panel.title} className="glass-panel creator-stack__card">
-            <h3>{panel.title}</h3>
-            <p>{panel.body}</p>
-          </article>
-        ))}
-      </section>
     </div>
   )
 }
@@ -635,7 +503,6 @@ function App() {
       <Routes>
         <Route path="*" element={<HomePage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
-        <Route path="/about" element={<AboutPage />} />
         <Route path="/creators" element={<CreatorsPage />} />
         <Route path="/experiments/state-changes" element={<WaterStatePage />} />
       </Routes>

@@ -28,7 +28,6 @@ const DEFAULT_ITEMS: BrowserMenuItem[] = [
     accent: '#f97316',
     tagline: 'Mission, story, and the humans building EduLab3D.',
     links: [
-      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '/about' },
       { label: 'Creators', description: 'Meet the students behind the experiments.', href: '/creators' },
     ],
   },
