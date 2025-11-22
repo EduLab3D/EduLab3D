@@ -5,8 +5,13 @@ import { Link, Route, Routes} from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
+<<<<<<< HEAD
 import CreatorsPage from './pages/Creators'
 import type { Group, Mesh } from 'three'
+=======
+import AboutPage from './pages/About'
+import NotFound from './pages/NotFound'
+>>>>>>> parent of 55f070d (Added creators page & other changes)
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
@@ -503,8 +508,13 @@ function App() {
       <Routes>
         <Route path="*" element={<HomePage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
+<<<<<<< HEAD
         <Route path="/creators" element={<CreatorsPage />} />
         <Route path="/experiments/state-changes" element={<WaterStatePage />} />
+=======
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="*" element={<NotFound />} />
+>>>>>>> parent of 55f070d (Added creators page & other changes)
       </Routes>
     </>
   )

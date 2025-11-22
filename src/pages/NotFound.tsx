@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 export default function NotFound() {
   return (
-    <div className="hero-stage page-enter" style={{ minHeight: '70vh', alignItems: 'center' }}>
+    <div className="hero-stage" style={{ minHeight: '70vh', alignItems: 'center' }}>
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
         <div style={{ position: 'relative' }}>
           <h1 style={{ 
