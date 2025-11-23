@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { Link, Route, Routes} from 'react-router-dom'
@@ -8,7 +8,7 @@ import BrowserMenu from './components/BrowserMenu'
 import AboutPage from './pages/About'
 import CreatorsPage from './pages/Creators'
 import NotFound from './pages/NotFound'
-import type { Group, Mesh } from 'three'
+import {IcosahedronGeometry, Vector3, type Group, type Mesh } from 'three'
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
@@ -109,41 +109,73 @@ const PHASE_THRESHOLD = {
 
 type WaterPhaseId = 'ice' | 'liquid' | 'vapor'
 
+type PhaseState = 'solid' | 'liquid' | 'gas'
+
+const PHASE_ANIMATION: Record<PhaseState, {
+  noiseAmplitude: number
+  noiseFrequency: number
+  wobbleSpeed: number
+  rotationSpeed: number
+  drift: number
+}> = {
+  solid: {
+    noiseAmplitude: 0.04,
+    noiseFrequency: 2.5,
+    wobbleSpeed: 0.6,
+    rotationSpeed: 0.12,
+    drift: 0,
+  },
+  liquid: {
+    noiseAmplitude: 0.12,
+    noiseFrequency: 3.8,
+    wobbleSpeed: 1.2,
+    rotationSpeed: 0.22,
+    drift: 0.05,
+  },
+  gas: {
+    noiseAmplitude: 0.22,
+    noiseFrequency: 5.5,
+    wobbleSpeed: 1.6,
+    rotationSpeed: 0.35,
+    drift: 0.12,
+  },
+}
+
 const WATER_PHASES: Record<WaterPhaseId, {
   label: string
   description: string
   color: string
-  scale: number
   vaporIntensity: number
   density: string
   enthalpy: string
+  state: PhaseState
 }> = {
   ice: {
     label: 'Solid (Ice)',
     description: 'Hydrogen bonds lock molecules into a lattice. Vibrations slow, density rises, and vapor almost disappears.',
-    color: '#8ecae6',
-    scale: 0.85,
+    color: '#4be5ff',
     vaporIntensity: 0.05,
     density: '0.92 g/cm³',
     enthalpy: '334 kJ/kg',
+    state: 'solid',
   },
   liquid: {
     label: 'Liquid',
     description: 'Molecules slip past each other; density peaks and surface tension plays a starring role in every lab demo.',
-    color: '#38bdf8',
-    scale: 1.1,
+    color: '#4be5ff',
     vaporIntensity: 0.2,
     density: '0.997 g/cm³',
     enthalpy: '4.18 kJ/kg·K',
+    state: 'liquid',
   },
   vapor: {
     label: 'Gas (Vapor)',
     description: 'Particles zip apart, filling any container. Pressure dominates behavior and convection cells ignite.',
-    color: '#aaaaff',
-    scale: 1.35,
+    color: '#4be5ff',
     vaporIntensity: 0.45,
     density: '0.0006 g/cm³',
     enthalpy: '2260 kJ/kg',
+    state: 'gas',
   },
 }
 
@@ -300,32 +332,82 @@ function HomePage() {
 
 type PhaseConfig = (typeof WATER_PHASES)[WaterPhaseId]
 
+const BASE_GEOMETRY = new IcosahedronGeometry(0.9, 3)
+const BASE_POSITIONS = BASE_GEOMETRY.attributes.position.array as Float32Array
+const VERTEX_DIRECTIONS = (() => {
+  const directions = new Float32Array(BASE_POSITIONS.length)
+  const temp = new Vector3()
+  for (let i = 0; i < BASE_POSITIONS.length; i += 3) {
+    temp.set(BASE_POSITIONS[i], BASE_POSITIONS[i + 1], BASE_POSITIONS[i + 2]).normalize()
+    directions[i] = temp.x
+    directions[i + 1] = temp.y
+    directions[i + 2] = temp.z
+  }
+  return directions
+})()
+
 function PhaseBlob({ phase }: { phase: PhaseConfig }) {
-    const meshRef = useRef<Mesh | null>(null)
-    const wobbleRef = useRef(0)
+     const meshRef = useRef<Mesh | null>(null)
+     const wobbleRef = useRef(0)
+     const targetPositions = useRef<Float32Array>(Float32Array.from(BASE_POSITIONS))
 
-    useFrame((_, delta) => {
-        if (!meshRef.current) return
-        wobbleRef.current += delta * 0.8
-        const eased = meshRef.current.scale.x + (phase.scale - meshRef.current.scale.x) * Math.min(delta * 6, 1)
-        meshRef.current.scale.setScalar(eased + Math.sin(wobbleRef.current) * 0.02)
-        meshRef.current.rotation.y += delta * 0.25
-        meshRef.current.rotation.x = Math.sin(wobbleRef.current * 0.5) * 0.15
-    })
+     useEffect(() => {
+         const base = BASE_POSITIONS
+         const profile = PHASE_ANIMATION[phase.state]
+         const next = new Float32Array(base.length)
 
-    return (
-        <mesh ref={meshRef} castShadow>
-            <icosahedronGeometry args={[0.9, 3]} />
-            <meshStandardMaterial
-                color={phase.color}
-                metalness={phase.label === 'Solid (Ice)' ? 0.15 : 0.05}
-                roughness={phase.label === 'Solid (Ice)' ? 0.4 : 0.15}
-                emissive={phase.color}
-                emissiveIntensity={0.12}
-            />
-        </mesh>
-    )
-}
+         for (let i = 0; i < base.length; i += 3) {
+             const sampled =
+                 VERTEX_DIRECTIONS[i] * profile.noiseFrequency +
+                 VERTEX_DIRECTIONS[i + 1] * profile.noiseFrequency * 1.4 +
+                 VERTEX_DIRECTIONS[i + 2] * profile.noiseFrequency * 1.8
+             const distortion = 1 + profile.noiseAmplitude * Math.sin(sampled)
+             next[i] = base[i] * distortion
+             next[i + 1] = base[i + 1] * distortion
+             next[i + 2] = base[i + 2] * distortion
+         }
+
+         targetPositions.current = next
+     }, [phase.state])
+
+     useFrame((_, delta) => {
+         if (!meshRef.current) return
+         const profile = PHASE_ANIMATION[phase.state]
+         wobbleRef.current += delta * profile.wobbleSpeed
+
+         const geometry = meshRef.current.geometry as IcosahedronGeometry
+         const positionAttribute = geometry.attributes.position
+         const currentArray = positionAttribute.array as Float32Array
+         const base = BASE_POSITIONS
+         const target = targetPositions.current
+
+         for (let i = 0; i < currentArray.length; i++) {
+             const current = currentArray[i]
+             const next = base[i] + (target[i] - base[i]) * 0.65
+             currentArray[i] = current + (next - current) * Math.min(delta * 4.5, 1)
+         }
+
+         positionAttribute.needsUpdate = true
+         geometry.computeVertexNormals()
+
+         meshRef.current.scale.setScalar(1)
+         meshRef.current.rotation.y += delta * profile.rotationSpeed
+         meshRef.current.rotation.x = Math.sin(wobbleRef.current * 0.5) * 0.12
+         meshRef.current.position.y = Math.sin(wobbleRef.current) * profile.drift
+     })
+
+     return (
+         <mesh ref={meshRef} geometry={BASE_GEOMETRY.clone()} castShadow>
+             <meshStandardMaterial
+                 color={phase.color}
+                 metalness={phase.state === 'solid' ? 0.18 : 0.08}
+                 roughness={phase.state === 'solid' ? 0.4 : phase.state === 'liquid' ? 0.2 : 0.08}
+                 emissive={phase.color}
+                 emissiveIntensity={phase.state === 'gas' ? 0.18 : 0.1}
+             />
+         </mesh>
+     )
+ }
 
 function VaporParticles({ intensity }: { intensity: number }) {
     const groupRef = useRef<Group | null>(null)
