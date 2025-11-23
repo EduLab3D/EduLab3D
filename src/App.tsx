@@ -1,11 +1,14 @@
-import { useMemo, useState } from 'react'
-import { Link, Route, Routes } from 'react-router-dom'
+import { Suspense, useMemo, useRef, useState } from 'react'
+import { Canvas, useFrame } from '@react-three/fiber'
+import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
+import { Link, Route, Routes} from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
 import AboutPage from './pages/About'
 import CreatorsPage from './pages/Creators'
 import NotFound from './pages/NotFound'
+import type { Group, Mesh } from 'three'
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
@@ -20,6 +23,15 @@ type Experiment = {
 }
 
 const EXPERIMENTS: Experiment[] = [
+    {
+        id: 'state-changes',
+        title: "Water State Changes",
+        summary: 'Dial temperature and pressure to observe water shifting between ice, liquid, and vapor in real time.',
+        level: 'Beginner',
+        duration: '7 min',
+        focus: 'Thermodynamics',
+        tags: ['Phase change', 'Latent heat'],
+    },
   {
     id: 'boyles-law',
     title: "Boyle's Law Piston",
@@ -76,6 +88,175 @@ const EXPERIMENTS: Experiment[] = [
   },
 ]
 
+const WATER_TIPS = [
+  'Use the sliders to move across the phase boundary and ask students to predict before revealing.',
+  'Pause at 100°C to discuss latent heat—temperature stays pinned while phase shifts.',
+  'Switch pressure to >2.4 atm and highlight how the boiling point climbs noticeably.'
+]
+
+const WATER_FACTS = [
+  'Water’s triple point occurs at 0.01°C and 0.006 atm—a tricky scenario that requires vacuum chambers.',
+  'Latent heat of vaporization is roughly 2260 kJ/kg, far larger than fusion (334 kJ/kg).',
+  'High-pressure cooking works because steam cannot form until the liquid becomes much hotter.'
+]
+
+const PHASE_THRESHOLD = {
+  minTemp: -40,
+  maxTemp: 140,
+  minPressure: 0.5,
+  maxPressure: 3,
+}
+
+type WaterPhaseId = 'ice' | 'liquid' | 'vapor'
+
+const WATER_PHASES: Record<WaterPhaseId, {
+  label: string
+  description: string
+  color: string
+  scale: number
+  vaporIntensity: number
+  density: string
+  enthalpy: string
+}> = {
+  ice: {
+    label: 'Solid (Ice)',
+    description: 'Hydrogen bonds lock molecules into a lattice. Vibrations slow, density rises, and vapor almost disappears.',
+    color: '#8ecae6',
+    scale: 0.85,
+    vaporIntensity: 0.05,
+    density: '0.92 g/cm³',
+    enthalpy: '334 kJ/kg',
+  },
+  liquid: {
+    label: 'Liquid',
+    description: 'Molecules slip past each other; density peaks and surface tension plays a starring role in every lab demo.',
+    color: '#38bdf8',
+    scale: 1.1,
+    vaporIntensity: 0.2,
+    density: '0.997 g/cm³',
+    enthalpy: '4.18 kJ/kg·K',
+  },
+  vapor: {
+    label: 'Gas (Vapor)',
+    description: 'Particles zip apart, filling any container. Pressure dominates behavior and convection cells ignite.',
+    color: '#aaaaff',
+    scale: 1.35,
+    vaporIntensity: 0.45,
+    density: '0.0006 g/cm³',
+    enthalpy: '2260 kJ/kg',
+  },
+}
+
+const resolveWaterPhase = (temperature: number, pressure: number): WaterPhaseId => {
+  if (temperature <= 0 && pressure >= 0.5) {
+    return 'ice'
+  }
+
+  if (temperature >= 100 && pressure <= 2.4) {
+    return 'vapor'
+  }
+
+  return 'liquid'
+}
+
+const useWaterPhase = () => {
+  const [temperature, setTemperature] = useState(24)
+  const [pressure, setPressure] = useState(1)
+  const phaseId = useMemo(() => resolveWaterPhase(temperature, pressure), [temperature, pressure])
+  const phase = WATER_PHASES[phaseId]
+
+  return {
+    temperature,
+    pressure,
+    phase,
+    phaseId,
+    setTemperature,
+    setPressure,
+  }
+}
+
+const WaterPhaseCard = ({ phase }: { phase: (typeof WATER_PHASES)[WaterPhaseId] }) => (
+  <div className="water-phase__card">
+    <p className="water-phase__eyebrow">Current Phase</p>
+    <h2 className="water-phase__title">{phase.label}</h2>
+    <p className="water-phase__copy">{phase.description}</p>
+    <div className="water-phase__data">
+      <div>
+        <p>Density</p>
+        <strong>{phase.density}</strong>
+      </div>
+      <div>
+        <p>Energy</p>
+        <strong>{phase.enthalpy}</strong>
+      </div>
+    </div>
+  </div>
+)
+
+const WaterControls = ({
+  temperature,
+  pressure,
+  setTemperature,
+  setPressure,
+}: {
+  temperature: number
+  pressure: number
+  setTemperature: (value: number) => void
+  setPressure: (value: number) => void
+}) => (
+  <div className="water-controls">
+    <label>
+      <span>Temperature ({temperature.toFixed(0)}°C)</span>
+      <input
+        type="range"
+        min={PHASE_THRESHOLD.minTemp}
+        max={PHASE_THRESHOLD.maxTemp}
+        value={temperature}
+        onChange={(event) => setTemperature(Number(event.target.value))}
+      />
+    </label>
+    <label>
+      <span>Pressure ({pressure.toFixed(2)} atm)</span>
+      <input
+        type="range"
+        min={PHASE_THRESHOLD.minPressure}
+        max={PHASE_THRESHOLD.maxPressure}
+        step="0.05"
+        value={pressure}
+        onChange={(event) => setPressure(Number(event.target.value))}
+      />
+    </label>
+  </div>
+)
+
+const TeachingTips = () => (
+  <section className="water-section">
+    <header>
+      <p className="section-eyebrow">Teacher prompts</p>
+      <h3>Turn slider moves into a think-pair-share moment.</h3>
+    </header>
+    <ul>
+      {WATER_TIPS.map((tip) => (
+        <li key={tip}>{tip}</li>
+      ))}
+    </ul>
+  </section>
+)
+
+const WaterFacts = () => (
+  <section className="water-section">
+    <header>
+      <p className="section-eyebrow">Demo nuggets</p>
+      <h3>Lean on numbers when curiosity spikes.</h3>
+    </header>
+    <ul>
+      {WATER_FACTS.map((fact) => (
+        <li key={fact}>{fact}</li>
+      ))}
+    </ul>
+  </section>
+)
+
 function HomePage() {
   return (
     <div className="hero-stage page-enter">
@@ -113,6 +294,146 @@ function HomePage() {
 
   <BrowserMenu />
       </div>
+    </div>
+  )
+}
+
+type PhaseConfig = (typeof WATER_PHASES)[WaterPhaseId]
+
+function PhaseBlob({ phase }: { phase: PhaseConfig }) {
+    const meshRef = useRef<Mesh | null>(null)
+    const wobbleRef = useRef(0)
+
+    useFrame((_, delta) => {
+        if (!meshRef.current) return
+        wobbleRef.current += delta * 0.8
+        const eased = meshRef.current.scale.x + (phase.scale - meshRef.current.scale.x) * Math.min(delta * 6, 1)
+        meshRef.current.scale.setScalar(eased + Math.sin(wobbleRef.current) * 0.02)
+        meshRef.current.rotation.y += delta * 0.25
+        meshRef.current.rotation.x = Math.sin(wobbleRef.current * 0.5) * 0.15
+    })
+
+    return (
+        <mesh ref={meshRef} castShadow>
+            <icosahedronGeometry args={[0.9, 3]} />
+            <meshStandardMaterial
+                color={phase.color}
+                metalness={phase.label === 'Solid (Ice)' ? 0.15 : 0.05}
+                roughness={phase.label === 'Solid (Ice)' ? 0.4 : 0.15}
+                emissive={phase.color}
+                emissiveIntensity={0.12}
+            />
+        </mesh>
+    )
+}
+
+function VaporParticles({ intensity }: { intensity: number }) {
+    const groupRef = useRef<Group | null>(null)
+    const particles = useMemo(
+        () =>
+            Array.from({ length: 36 }, (_, index) => ({
+                id: index,
+                position: [
+                    (Math.random() - 0.5) * 2,
+                    Math.random() * 1.6 + 0.3,
+                    (Math.random() - 0.5) * 2,
+                ] as [number, number, number],
+                size: Math.random() * 0.08 + 0.02,
+            })),
+        [],
+    )
+
+    useFrame((_, delta) => {
+        if (!groupRef.current) return
+        groupRef.current.rotation.y += delta * 0.08
+    })
+
+    return (
+        <group ref={groupRef} renderOrder={-1}>
+            {particles.map((particle) => (
+                <mesh key={particle.id} position={particle.position} scale={particle.size} castShadow={false} receiveShadow={false}>
+                    <sphereGeometry args={[1, 8, 8]} />
+                    <meshStandardMaterial color="#ffffff" transparent opacity={Math.min(intensity, 0.8)} depthWrite={false} />
+                </mesh>
+            ))}
+        </group>
+    )
+}
+
+function ThermalPlate() {
+    return (
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.9, 0]} receiveShadow>
+            <cylinderGeometry args={[1.5, 1.8, 0.08, 64]} />
+            <meshStandardMaterial color="#111018" metalness={0.2} roughness={0.7} />
+        </mesh>
+    )
+}
+
+function WaterStatePage() {
+  const { temperature, pressure, phase, setTemperature, setPressure } = useWaterPhase()
+
+  return (
+    <div className="page-shell water-page">
+      <header className="page-header">
+        <span className="page-eyebrow">Water State Lab</span>
+        <div className="page-header__content">
+          <h1 className="page-title">Dial temperature and pressure, watch the phase respond.</h1>
+          <p className="page-lede">
+            Students see an immediate response in the blob and the live metrics every time you nudge temperature or pressure. Use it to debate
+            latent heat, triple points, or why pressure cookers boil higher.
+          </p>
+        </div>
+        <span className="placeholder-pill" aria-label="All experiment copy uses finalized educator prompts">
+          Includes guided teacher prompts
+        </span>
+      </header>
+
+      <section className="water-lab__grid">
+        <article className="glass-panel water-lab__panel">
+          <WaterPhaseCard phase={phase} />
+
+          <div className="water-metrics">
+            <div className="water-metric">
+              <p>Temperature</p>
+              <strong>{temperature.toFixed(0)}°C</strong>
+            </div>
+            <div className="water-metric">
+              <p>Pressure</p>
+              <strong>{pressure.toFixed(2)} atm</strong>
+            </div>
+          </div>
+
+          <WaterControls temperature={temperature} pressure={pressure} setTemperature={setTemperature} setPressure={setPressure} />
+
+          <div className="water-phase__legend">
+            <span className="water-phase__pill">Phase indicator updates with every slider move.</span>
+            <Link to="/experiments" className="water-phase__cta">
+              Browse other experiments ↗
+            </Link>
+          </div>
+        </article>
+
+        <article className="glass-panel water-lab__panel water-lab__panel--scene">
+          <div className="water-lab__canvas">
+            <Canvas camera={{ position: [0, 1.4, 3.2], fov: 45 }} shadows>
+              <ambientLight intensity={0.55} />
+              <directionalLight position={[2.5, 3, 2]} intensity={1.1} castShadow />
+              <Suspense fallback={null}>
+                <PhaseBlob phase={phase} />
+                <VaporParticles intensity={phase.vaporIntensity} />
+                <ThermalPlate />
+                <Environment preset="city" />
+              </Suspense>
+              <ContactShadows position={[0, -0.9, 0]} opacity={0.45} blur={1.4} far={3} />
+              <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.2} minPolarAngle={0.3} />
+            </Canvas>
+          </div>
+          <p className="water-lab__hint">Three.js scene reacts to your slider inputs.</p>
+        </article>
+      </section>
+
+      <TeachingTips />
+      <WaterFacts />
     </div>
   )
 }
@@ -233,7 +554,7 @@ function ExperimentsPage() {
                   ))}
                 </div>
               </div>
-              <a href={`#/experiments/${experiment.id}`} className="experiment-card__cta">
+              <a href={`/experiments/${experiment.id}`} className="experiment-card__cta">
                 Launch simulation
                 <span aria-hidden="true">↗</span>
               </a>
@@ -292,6 +613,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/creators" element={<CreatorsPage />} />
         <Route path="*" element={<NotFound />} />
+          <Route path="/experiments/state-changes" element={<WaterStatePage />} />
       </Routes>
     </>
   )
