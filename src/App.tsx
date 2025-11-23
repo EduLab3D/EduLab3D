@@ -554,10 +554,10 @@ function ExperimentsPage() {
                   ))}
                 </div>
               </div>
-              <a href={`/experiments/${experiment.id}`} className="experiment-card__cta">
+              <Link to={`/experiments/${experiment.id}`} className="experiment-card__cta">
                 Launch simulation
                 <span aria-hidden="true">↗</span>
-              </a>
+              </Link>
             </article>
           ))}
         </div>
