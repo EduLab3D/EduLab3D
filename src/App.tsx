@@ -3,6 +3,7 @@ import { Link, Route, Routes } from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
+import RefractionLab from './experiments/RefractionLab'
 import AboutPage from './pages/About'
 import CreatorsPage from './pages/Creators'
 import NotFound from './pages/NotFound'
@@ -233,10 +234,10 @@ function ExperimentsPage() {
                   ))}
                 </div>
               </div>
-              <a href={`#/experiments/${experiment.id}`} className="experiment-card__cta">
+              <Link to={`/experiments/${experiment.id}`} className="experiment-card__cta">
                 Launch simulation
                 <span aria-hidden="true">↗</span>
-              </a>
+              </Link>
             </article>
           ))}
         </div>
@@ -289,6 +290,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/experiments" element={<ExperimentsPage />} />
+        <Route path="/experiments/refraction-lab" element={<RefractionLab />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/creators" element={<CreatorsPage />} />
         <Route path="*" element={<NotFound />} />
