@@ -127,7 +127,6 @@ function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
   
   let exitPoint = new THREE.Vector3(0, -blockHeight, 0)
   let exitNormal = new THREE.Vector3(0, 1, 0) // Normal pointing IN to the block at exit surface
-  let hitSide = false
 
   if (!isTIR) {
     const tanTheta2 = Math.tan(theta2)
@@ -135,7 +134,6 @@ function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
     
     if (Math.abs(xAtBottom) > blockWidth / 2) {
       // Hits side wall
-      hitSide = true
       const sideX = (theta2 > 0 ? 1 : -1) * (blockWidth / 2)
       // y = x / tan(theta2) -> but y is negative
       const sideY = -Math.abs(sideX / tanTheta2)

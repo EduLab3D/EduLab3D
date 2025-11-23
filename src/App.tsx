@@ -1,15 +1,16 @@
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState, lazy } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { Link, Route, Routes} from 'react-router-dom'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
-import RefractionLab from './experiments/RefractionLab'
-import AboutPage from './pages/About'
-import CreatorsPage from './pages/Creators'
-import NotFound from './pages/NotFound'
 import {IcosahedronGeometry, Vector3, type Group, type Mesh } from 'three'
+
+const RefractionLab = lazy(() => import('./experiments/RefractionLab'))
+const AboutPage = lazy(() => import('./pages/About'))
+const CreatorsPage = lazy(() => import('./pages/Creators'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 type ExperimentLevel = 'Beginner' | 'Intermediate' | 'Advanced'
 
@@ -690,15 +691,17 @@ function App() {
         </div>
       </div>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/experiments" element={<ExperimentsPage />} />
-        <Route path="/experiments/refraction-lab" element={<RefractionLab />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/creators" element={<CreatorsPage />} />
-        <Route path="*" element={<NotFound />} />
+      <Suspense fallback={<div className="page-enter" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/experiments" element={<ExperimentsPage />} />
+          <Route path="/experiments/refraction-lab" element={<RefractionLab />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/creators" element={<CreatorsPage />} />
+          <Route path="*" element={<NotFound />} />
           <Route path="/experiments/state-changes" element={<WaterStatePage />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </>
   )
 }
