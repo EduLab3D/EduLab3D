@@ -1,8 +1,10 @@
 import { Suspense, useMemo, useState, lazy } from 'react'
 import { Link, Route, Routes} from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import './App.css'
 import logo from './assets/logo.svg'
 import BrowserMenu from './components/BrowserMenu'
+import LanguageSwitcher from './components/LanguageSwitcher'
 
 const RefractionLab = lazy(() => import('./experiments/RefractionLab'))
 const WaterStatePage = lazy(() => import('./experiments/WaterState'))
@@ -90,6 +92,7 @@ const EXPERIMENTS: Experiment[] = [
 
 
 function HomePage() {
+  const { t } = useTranslation();
   return (
     <div className="hero-stage page-enter">
       <div
@@ -105,21 +108,21 @@ function HomePage() {
         }}
       >
         <div className="hero-lede">
-          <p className="hero-lede__eyebrow">Welcome aboard</p>
+          <p className="hero-lede__eyebrow">{t('home.welcome')}</p>
           <h1>
-            Welcome to our Universe,
+            {t('home.title')}
             <br />
-            EduLab3D!
+            {t('home.subtitle')}
           </h1>
           <p className="hero-lede__description">
-            Interactive science experiments built for live class demos.
+            {t('home.description')}
           </p>
           <div className="hero-lede__actions">
             <Link to="/experiments" className="gradient-button">
-              <span>Get Started</span>
+              <span>{t('home.start_experiment')}</span>
             </Link>
             <Link to="/about" className="ghost-button">
-              Learn More
+              <span>{t('home.learn_more')}</span>
             </Link>
           </div>
         </div>
@@ -133,6 +136,7 @@ function HomePage() {
 
 
 function ExperimentsPage() {
+  const { t } = useTranslation();
   const levels: Array<'All' | ExperimentLevel> = ['All', 'Beginner', 'Intermediate', 'Advanced']
   const [activeLevel, setActiveLevel] = useState<'All' | ExperimentLevel>('All')
   const [query, setQuery] = useState('')
@@ -151,19 +155,22 @@ function ExperimentsPage() {
       if (!normalizedQuery) {
         return matchesLevel && matchesFocus
       }
-      const haystack = [experiment.title, experiment.summary, experiment.focus, experiment.tags.join(' ')].join(' ').toLowerCase()
+      // Search in translated content if possible, but for now search in original English data
+      // Ideally we should search in translated data
+      const title = t(`experiments.${experiment.id}.title`, experiment.title)
+      const summary = t(`experiments.${experiment.id}.summary`, experiment.summary)
+      const haystack = [title, summary, experiment.focus, experiment.tags.join(' ')].join(' ').toLowerCase()
       return matchesLevel && matchesFocus && haystack.includes(normalizedQuery)
     })
-  }, [activeLevel, focusFilter, query])
+  }, [activeLevel, focusFilter, query, t])
 
   return (
     <div className="experiments-page page-enter">
       <header className="experiments-page__hero">
-        <p className="experiments-page__eyebrow">Live catalogue</p>
-        <h1>Experiments built for curious classrooms.</h1>
+        <p className="experiments-page__eyebrow">{t('experiments_page.eyebrow')}</p>
+        <h1>{t('experiments_page.title')}</h1>
         <p className="experiments-page__lede">
-          Filter by level, subject focus, or concept to find the perfect starting point. Every simulation includes pacing tips,
-          printable lab notes, and built-in assessment moments.
+          {t('experiments_page.lede')}
         </p>
         <div className="experiments-page__filters" role="tablist">
           {levels.map((level) => (
@@ -175,14 +182,14 @@ function ExperimentsPage() {
               className={`experiments-page__filter ${activeLevel === level ? 'is-active' : ''}`}
               onClick={() => setActiveLevel(level)}
             >
-              {level}
+              {level === 'All' ? 'All' : t(`common.${level.toLowerCase()}`)}
             </button>
           ))}
         </div>
 
         <div className="experiments-search">
           <label className="experiments-search__label">
-            <span className="experiments-search__label-text">Search experiments</span>
+            <span className="experiments-search__label-text">{t('experiments_page.search_label')}</span>
             <div className="experiments-search__input">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
@@ -204,7 +211,7 @@ function ExperimentsPage() {
               </svg>
               <input
                 type="search"
-                placeholder="Try “Boyle’s law” or “plasma”"
+                placeholder={t('experiments_page.search_placeholder')}
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
@@ -227,19 +234,19 @@ function ExperimentsPage() {
         </div>
       </header>
 
-      <p className="experiments-page__count">{visibleExperiments.length} matches</p>
+      <p className="experiments-page__count">{visibleExperiments.length} {t('experiments_page.matches')}</p>
 
       {visibleExperiments.length === 0 ? (
-        <div className="experiments-page__empty">No experiments match that search yet. Try another term or focus area.</div>
+        <div className="experiments-page__empty">{t('experiments_page.empty')}</div>
       ) : (
         <div className="experiments-page__grid">
           {visibleExperiments.map((experiment) => (
             <article key={experiment.id} className="experiment-card">
               <div className="experiment-card__meta">
-                <span className={`experiment-card__level level-${experiment.level.toLowerCase()}`}>{experiment.level}</span>
+                <span className={`experiment-card__level level-${experiment.level.toLowerCase()}`}>{t(`common.${experiment.level.toLowerCase()}`)}</span>
               </div>
-              <h2>{experiment.title}</h2>
-              <p>{experiment.summary}</p>
+              <h2>{t(`experiments.${experiment.id}.title`, experiment.title)}</h2>
+              <p>{t(`experiments.${experiment.id}.summary`, experiment.summary)}</p>
               <div className="experiment-card__footer">
                 <span className="experiment-card__focus">{experiment.focus}</span>
                 <div className="experiment-card__tags">
@@ -249,7 +256,7 @@ function ExperimentsPage() {
                 </div>
               </div>
               <Link to={`/experiments/${experiment.id}`} className="experiment-card__cta">
-                Launch simulation
+                {t('experiments_page.launch')}
                 <span aria-hidden="true">↗</span>
               </Link>
             </article>
@@ -298,6 +305,9 @@ function App() {
               </svg>
             </Link>
           </div>
+        </div>
+        <div style={{ position: 'absolute', right: '2rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'auto' }}>
+          <LanguageSwitcher />
         </div>
       </div>
 

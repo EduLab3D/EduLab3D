@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 export default function NotFound() {
+  const { t } = useTranslation()
   return (
     <div className="hero-stage page-enter" style={{ minHeight: '70vh', alignItems: 'center' }}>
       <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
@@ -15,7 +17,7 @@ export default function NotFound() {
             WebkitTextFillColor: 'transparent',
             filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.1))'
           }}>
-            404
+            {t('not_found.title')}
           </h1>
           <div style={{
             position: 'absolute',
@@ -24,26 +26,23 @@ export default function NotFound() {
             transform: 'translate(-50%, -50%)',
             width: '120%',
             height: '40%',
-            background: 'radial-gradient(ellipse at center, rgba(168, 85, 247, 0.4) 0%, transparent 70%)',
-            filter: 'blur(40px)',
+            background: 'radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%)',
+            filter: 'blur(20px)',
             zIndex: -1
           }} />
         </div>
         
-        <h2 style={{ fontSize: 'clamp(1.2rem, 2vw, 1.8rem)', margin: 0, color: 'rgba(255,255,255,0.9)' }}>
-          Lost in the Void
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 500, color: '#fff', margin: 0 }}>
+          {t('not_found.subtitle')}
         </h2>
         
-        <p style={{ maxWidth: '460px', color: 'rgba(255,255,255,0.6)', lineHeight: 1.6, margin: 0 }}>
-          The coordinates you entered don't match any known sector in our universe. 
-          Let's get you back to solid ground.
+        <p style={{ color: 'rgba(255,255,255,0.6)', maxWidth: '400px', margin: 0 }}>
+          {t('not_found.desc')}
         </p>
-        
-        <div style={{ marginTop: '1rem' }}>
-          <Link to="/" className="gradient-button">
-            <span>Return to Base</span>
-          </Link>
-        </div>
+
+        <Link to="/" className="gradient-button" style={{ marginTop: '1rem' }}>
+          {t('not_found.back_home')}
+        </Link>
       </div>
     </div>
   )

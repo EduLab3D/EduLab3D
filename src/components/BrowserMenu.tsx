@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import './BrowserMenu.css'
 
 type BrowserMenuLink = {
@@ -22,38 +23,42 @@ type BrowserMenuProps = {
   items?: BrowserMenuItem[]
 }
 
-const DEFAULT_ITEMS: BrowserMenuItem[] = [
-  {
-    label: 'About',
-    accent: '#f97316',
-    tagline: 'Mission, story, and the humans building EduLab3D.',
-    links: [
-      { label: 'What is EduLab3D?', description: 'Why we exist and how the lab works.', href: '/about' },
-      { label: 'Creators', description: 'Meet the students behind the experiments.', href: '/creators' },
-    ],
-  },
-  {
-    label: 'Experiments',
-    accent: '#a855f7',
-    tagline: 'Curated simulations grouped by difficulty and topic.',
-    links: [
-      { label: 'By level', description: 'Pick Beginner, Intermediate, or Advanced.', href: '/experiments?view=levels' },
-      { label: 'All experiments', description: 'Browse the full catalogue at once.', href: '/experiments' },
-    ],
-  },
-  {
-    label: 'Contact',
-    accent: '#22d3ee',
-    tagline: 'Get help, share feedback, or contribute.',
-    taglineSpacer: false,
-    links: [
-      { label: 'Email support', description: 'support@edulab3d.tech', descriptionSpacer: true, href: 'mailto:support@edulab3d.tech', external: true},
-      { label: 'GitHub', description: 'Open source repo & issues.', descriptionSpacer: true ,href: 'https://github.com/EduLab3D/EduLab3D', external: true },
-    ],
-  },
-]
+export default function BrowserMenu({ items }: BrowserMenuProps) {
+  const { t } = useTranslation()
 
-export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps) {
+  const defaultItems: BrowserMenuItem[] = [
+    {
+      label: t('browser_menu.about.label'),
+      accent: '#f97316',
+      tagline: t('browser_menu.about.tagline'),
+      links: [
+        { label: t('browser_menu.about.what_is'), description: t('browser_menu.about.what_is_desc'), href: '/about' },
+        { label: t('browser_menu.about.creators'), description: t('browser_menu.about.creators_desc'), href: '/creators' },
+      ],
+    },
+    {
+      label: t('browser_menu.experiments.label'),
+      accent: '#a855f7',
+      tagline: t('browser_menu.experiments.tagline'),
+      links: [
+        { label: t('browser_menu.experiments.by_level'), description: t('browser_menu.experiments.by_level_desc'), href: '/experiments?view=levels' },
+        { label: t('browser_menu.experiments.all'), description: t('browser_menu.experiments.all_desc'), href: '/experiments' },
+      ],
+    },
+    {
+      label: t('browser_menu.contact.label'),
+      accent: '#22d3ee',
+      tagline: t('browser_menu.contact.tagline'),
+      taglineSpacer: false,
+      links: [
+        { label: t('browser_menu.contact.email'), description: 'support@edulab3d.tech', descriptionSpacer: true, href: 'mailto:support@edulab3d.tech', external: true},
+        { label: 'GitHub', description: 'Open source repo & issues.', descriptionSpacer: true ,href: 'https://github.com/EduLab3D/EduLab3D', external: true },
+      ],
+    },
+  ]
+
+  const menuItems = items || defaultItems
+
   return (
     <section className="browser-menu" aria-label="Browse EduLab3D">
       <div className="browser-menu__heading">
@@ -65,7 +70,7 @@ export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps)
       </div>
 
       <div className="browser-menu__cards">
-        {items.map((item) => (
+        {menuItems.map((item) => (
           <article
             key={item.label}
             className="browser-menu__card"
@@ -96,29 +101,7 @@ export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps)
                           </span>
                         )}
                       </span>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M21 21l-4.35-4.35"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <span className="browser-menu__link-arrow" aria-hidden="true">↗</span>
                     </a>
                   ) : (
                     <Link to={link.href} className="browser-menu__link">
@@ -130,29 +113,7 @@ export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps)
                           </span>
                         )}
                       </span>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M21 21l-4.35-4.35"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <span className="browser-menu__link-arrow" aria-hidden="true">→</span>
                     </Link>
                   )}
                 </li>
@@ -164,3 +125,5 @@ export default function BrowserMenu({ items = DEFAULT_ITEMS }: BrowserMenuProps)
     </section>
   )
 }
+
+
