@@ -13,38 +13,12 @@ export default function LanguageSwitcher() {
     { code: 'es', label: 'Español', flag: '🇪🇸' },
   ];
 
-  const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
+  const activeLang = (i18n.resolvedLanguage ?? i18n.language ?? 'en').split('-')[0];
+  const currentLang = languages.find(l => l.code === activeLang) || languages[0];
 
   const handleLanguageChange = (langCode: string) => {
     i18n.changeLanguage(langCode);
     setIsOpen(false);
-  };
-
-  const handleGoogleTranslate = () => {
-    setIsOpen(false);
-    // Trigger Google Translate
-    const googleTranslateElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-    if (googleTranslateElement) {
-      googleTranslateElement.value = ''; // Reset to allow selection
-      googleTranslateElement.dispatchEvent(new Event('change'));
-    } else {
-      // If the widget is not yet initialized or visible, we might need to show it
-      // For now, let's just try to open the widget if possible, or scroll to it
-      // Since we are using the "Simple" layout, it might be a dropdown somewhere.
-      // Let's try to make the hidden div visible?
-      const wrapper = document.getElementById('google_translate_element');
-      if (wrapper) {
-        wrapper.style.display = 'block';
-        wrapper.style.position = 'absolute';
-        wrapper.style.top = '60px';
-        wrapper.style.right = '20px';
-        wrapper.style.zIndex = '1000';
-        wrapper.style.background = 'white';
-        wrapper.style.padding = '10px';
-        wrapper.style.borderRadius = '8px';
-        wrapper.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-      }
-    }
   };
 
   // Close dropdown when clicking outside
@@ -142,7 +116,7 @@ export default function LanguageSwitcher() {
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
             style={{
-              background: i18n.language === lang.code ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+              background: activeLang === lang.code ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
               border: 'none',
               borderRadius: '8px',
               padding: '0.6rem 1rem',
@@ -156,7 +130,7 @@ export default function LanguageSwitcher() {
               transition: 'background 0.2s'
             }}
             onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = i18n.language === lang.code ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
+            onMouseLeave={(e) => e.currentTarget.style.background = activeLang === lang.code ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
           >
             <span style={{ fontSize: '1.2rem' }}>{lang.flag}</span>
             <span>{lang.label}</span>
