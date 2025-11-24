@@ -596,6 +596,13 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
+    detection: {
+      // Prefer stored user preference (localStorage, cookie) and avoid automatic navigator detection
+      // so the site falls back to English unless the user explicitly selects another language.
+      order: ['localStorage', 'cookie', 'htmlTag', 'path', 'subdomain'],
+      // Cache the user language in localStorage and cookie so it persists when the user chooses.
+      caches: ['localStorage', 'cookie']
+    },
     interpolation: {
       escapeValue: false
     }
