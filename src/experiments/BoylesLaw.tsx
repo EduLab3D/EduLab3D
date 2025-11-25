@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Canvas, useFrame } from '@react-three/fiber'
+import type { ThreeEvent } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { useTranslation } from 'react-i18next'
@@ -17,11 +18,26 @@ const CYLINDER_RADIUS_M = 0.04 // 4 cm radius chamber
 const BASE_AREA_M2 = Math.PI * CYLINDER_RADIUS_M * CYLINDER_RADIUS_M
 const INITIAL_PRESSURE_ATM = 1
 const PV_CONSTANT = INITIAL_PRESSURE_ATM * (INITIAL_LENGTH_CM / 100) * BASE_AREA_M2
+const CYLINDER_INNER_RADIUS_WORLD = CYLINDER_RADIUS_WORLD - 0.1
+
+const clampLength = (worldY: number) => (
+	THREE.MathUtils.clamp(
+		(worldY - BASE_BOTTOM) / LENGTH_TO_WORLD,
+		MIN_LENGTH_CM,
+		MAX_LENGTH_CM
+	)
+)
 
 type Molecule = {
 	position: THREE.Vector3
 	velocity: THREE.Vector3
 }
+
+type BoyleLabGlobals = typeof globalThis & {
+	__edulabBoyleMolecules?: Molecule[]
+}
+
+const getGlobalStore = (): BoyleLabGlobals => globalThis as BoyleLabGlobals
 
 const createMolecule = (): Molecule => ({
 	position: new THREE.Vector3(
@@ -37,8 +53,15 @@ const createMolecule = (): Molecule => ({
 })
 
 function AirMolecules({ heightWorld, pressure }: { heightWorld: number, pressure: number }) {
-	const molecules = useMemo<Molecule[]>(() => Array.from({ length: MOLECULE_COUNT }, () => createMolecule()), [])
+	const molecules = useMemo<Molecule[]>(() => {
+		const store = getGlobalStore()
+		if (!store.__edulabBoyleMolecules) {
+			store.__edulabBoyleMolecules = Array.from({ length: MOLECULE_COUNT }, () => createMolecule())
+		}
+		return store.__edulabBoyleMolecules
+	}, [])
 	const meshRefs = useRef<THREE.Mesh[]>([])
+	const radialNormal = useMemo(() => new THREE.Vector3(), [])
 
 	useFrame((_, delta) => {
 		const bounds = {
@@ -47,7 +70,7 @@ function AirMolecules({ heightWorld, pressure }: { heightWorld: number, pressure
 			yMin: BASE_BOTTOM + 0.05,
 			yMax: BASE_BOTTOM + Math.max(heightWorld - 0.05, 0.25),
 		}
-		const speedFactor = 0.7 + (pressure - 1) * 0.25
+		const speedFactor = 1.2 + Math.max(0, (pressure - 1) * 0.6)
 
 		molecules.forEach((molecule, index) => {
 			molecule.position.addScaledVector(molecule.velocity, delta * speedFactor)
@@ -60,6 +83,16 @@ function AirMolecules({ heightWorld, pressure }: { heightWorld: number, pressure
 			if (molecule.position.z > bounds.z || molecule.position.z < -bounds.z) {
 				molecule.position.z = THREE.MathUtils.clamp(molecule.position.z, -bounds.z, bounds.z)
 				molecule.velocity.z *= -1
+			}
+
+			const radial = Math.hypot(molecule.position.x, molecule.position.z)
+			if (radial > CYLINDER_INNER_RADIUS_WORLD) {
+				radialNormal.set(molecule.position.x, 0, molecule.position.z).normalize()
+				molecule.position.x = radialNormal.x * CYLINDER_INNER_RADIUS_WORLD
+				molecule.position.z = radialNormal.z * CYLINDER_INNER_RADIUS_WORLD
+				const velAlongNormal = molecule.velocity.x * radialNormal.x + molecule.velocity.z * radialNormal.z
+				molecule.velocity.x -= 2 * velAlongNormal * radialNormal.x
+				molecule.velocity.z -= 2 * velAlongNormal * radialNormal.z
 			}
 
 			if (molecule.position.y > bounds.yMax) {
@@ -145,7 +178,59 @@ function PistonAssembly({ lengthCm }: { lengthCm: number }) {
 	)
 }
 
-function BoyleScene({ lengthCm, pressure }: { lengthCm: number, pressure: number }) {
+function PistonDragOverlay({ onLengthChange }: { onLengthChange: (value: number) => void }) {
+	const dragging = useRef(false)
+
+	useEffect(() => {
+		const stopDrag = () => {
+			if (!dragging.current) return
+			dragging.current = false
+			document.body.style.cursor = ''
+		}
+		window.addEventListener('pointerup', stopDrag)
+		return () => {
+			window.removeEventListener('pointerup', stopDrag)
+			document.body.style.cursor = ''
+		}
+	}, [])
+
+	const updateLength = (event: ThreeEvent<PointerEvent>) => {
+		const cm = clampLength(event.point.y)
+		onLengthChange(cm)
+	}
+
+	const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
+		event.stopPropagation()
+		dragging.current = true
+		document.body.style.cursor = 'ns-resize'
+		updateLength(event)
+	}
+
+	const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
+		if (!dragging.current) return
+		event.stopPropagation()
+		updateLength(event)
+	}
+
+	return (
+		<mesh
+			position={[0, BASE_BOTTOM + (MAX_LENGTH_CM * LENGTH_TO_WORLD) / 2, CYLINDER_RADIUS_WORLD + 0.15]}
+			onPointerDown={handlePointerDown}
+			onPointerMove={handlePointerMove}
+			onPointerEnter={() => {
+				if (!dragging.current) document.body.style.cursor = 'ns-resize'
+			}}
+			onPointerLeave={() => {
+				if (!dragging.current) document.body.style.cursor = ''
+			}}
+		>
+			<planeGeometry args={[6, MAX_LENGTH_CM * LENGTH_TO_WORLD + 4]} />
+			<meshBasicMaterial transparent opacity={0} depthWrite={false} />
+		</mesh>
+	)
+}
+
+function BoyleScene({ lengthCm, pressure, onLengthChange }: { lengthCm: number, pressure: number, onLengthChange: (value: number) => void }) {
 	const heightWorld = lengthCm * LENGTH_TO_WORLD
 	const basePlateY = BASE_BOTTOM - 0.15
 
@@ -162,6 +247,7 @@ function BoyleScene({ lengthCm, pressure }: { lengthCm: number, pressure: number
 
 			<PistonAssembly lengthCm={lengthCm} />
 			<AirMolecules heightWorld={heightWorld} pressure={pressure} />
+			<PistonDragOverlay onLengthChange={onLengthChange} />
 
 			<ContactShadows position={[0, basePlateY - 0.05, 0]} opacity={0.4} scale={5} blur={2.5} far={5} />
 		</group>
@@ -191,7 +277,7 @@ export default function BoylesLaw() {
 				}}
 			>
 				<Canvas camera={{ position: [4, 4, 6], fov: 50 }} shadows>
-					<BoyleScene lengthCm={lengthCm} pressure={stats.pressure} />
+					<BoyleScene lengthCm={lengthCm} pressure={stats.pressure} onLengthChange={setLengthCm} />
 					<OrbitControls makeDefault minPolarAngle={Math.PI / 4} maxPolarAngle={Math.PI / 1.5} />
 				</Canvas>
 				<div
@@ -293,9 +379,8 @@ export default function BoylesLaw() {
 						</div>
 					</div>
 
-					<div style={{ padding: '1rem', borderRadius: '1.2rem', background: 'rgba(8, 47, 73, 0.6)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-						<p style={{ margin: 0, fontSize: '0.9rem', color: 'rgba(224, 242, 254, 0.9)' }}>{t('boyle_lab.molecules_caption')}</p>
-						<p style={{ margin: '0.4rem 0 0', fontSize: '0.85rem', color: 'rgba(224, 242, 254, 0.6)', lineHeight: 1.5 }}>{t('boyle_lab.description')}</p>
+					<div style={{ padding: '1rem', borderRadius: '1.2rem', background: 'rgba(8, 47, 73, 0.35)', border: '1px solid rgba(56, 189, 248, 0.2)', color: 'rgba(224,242,254,0.65)', fontSize: '0.85rem', lineHeight: 1.5 }}>
+						{t('boyle_lab.drag_hint')}
 					</div>
 				</div>
 			</div>
