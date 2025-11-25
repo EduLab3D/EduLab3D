@@ -59,11 +59,11 @@ export default function CreatorsPage() {
             />
             <div>
               <h2 style={{ fontSize: '2rem', margin: 0, lineHeight: 1.1 }}>Waxify</h2>
-              <span className="experiment-card__level level-advanced" style={{ display: 'inline-block', marginTop: '0.5rem' }}>Simulation Developer</span>
+              <span className="experiment-card__level level-advanced" style={{ display: 'inline-block', marginTop: '0.5rem' }}>{t('creators_page.waxify.role')}</span>
             </div>
           </div>
           <p style={{ marginBottom: '1.5rem' }}>
-            Building the core physics and simulation logic. Focused on accuracy and creating immersive interactive experiments.
+            {t('creators_page.waxify.desc')}
           </p>
           <div className="experiment-card__footer">
             <div className="experiment-card__tags">

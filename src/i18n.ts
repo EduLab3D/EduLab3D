@@ -11,10 +11,10 @@ const resources = {
         "creators": "Creators"
       },
       "home": {
-        "title": "EduLab 3D",
-        "subtitle": "Interactive 3D Science Experiments",
-        "description": "Explore physics, chemistry, and biology through immersive 3D simulations directly in your browser.",
-        "start_experiment": "Start Experiment",
+        "title": "Welcome to our Universe,",
+        "subtitle": "EduLab3D!",
+        "description": "Interactive science experiments built for live class demos.",
+        "start_experiment": "Get Started",
         "view_all": "View All Experiments",
         "learn_more": "Learn More",
         "welcome": "Welcome aboard"
@@ -69,6 +69,11 @@ const resources = {
         "launch": "Launch simulation"
       },
       "browser_menu": {
+        "heading": {
+          "eyebrow": "Quick navigation",
+          "title": "Browse the lab menu",
+          "subtitle": "Jump into the sections you visit the most. Each card reveals focused shortcuts so you can get moving faster."
+        },
         "about": {
           "label": "About",
           "tagline": "Mission, story, and the humans building EduLab3D.",
@@ -88,8 +93,24 @@ const resources = {
         "contact": {
           "label": "Contact",
           "tagline": "Get help, share feedback, or contribute.",
-          "email": "Email support"
+          "email": "Email support",
+          "github": "GitHub",
+          "github_desc": "Open source repo & issues."
         }
+      },
+      "creators_page": {
+        "eyebrow": "The Team",
+        "title": "Meet the Creators",
+        "lede": "We are a group of passionate students and developers building the future of science education.",
+        "devlog": {
+          "role": "Lead Developer & Designer",
+          "desc": "Crafting the user interface and experience. Passionate about making complex tools feel simple and intuitive."
+        },
+        "waxify": {
+          "role": "Simulation Developer",
+          "desc": "Building the core physics and simulation logic. Focused on accuracy and creating immersive interactive experiments."
+        },
+        "discord": "Discord"
       },
       "about_page": {
         "eyebrow": "About Us",
@@ -102,21 +123,73 @@ const resources = {
         "involved_p": "We are always looking for contributors! Whether you are a developer, designer, or teacher, there is a place for you in our community.",
         "contact_us": "Contact Us"
       },
-      "creators_page": {
-        "eyebrow": "The Team",
-        "title": "Meet the minds behind the lab.",
-        "lede": "EduLab3D is brought to you by passionate developers dedicated to making science education accessible and engaging.",
-        "devlog": {
-          "role": "UI Developer",
-          "desc": "Crafting the visual experience and interface. Dedicated to making the lab intuitive, responsive, and beautiful for every student."
-        },
-        "discord": "Discord"
-      },
       "not_found": {
         "title": "404",
-        "subtitle": "Lost in the void?",
-        "desc": "The experiment you are looking for has drifted into a black hole.",
-        "back_home": "Return to Safety"
+        "subtitle": "Lost in the Void",
+        "desc": "The coordinates you entered don't match any known sector in our universe. Let's get you back to solid ground.",
+        "back_home": "Return to Base"
+      },
+      "water_state": {
+        "eyebrow": "Water State Lab",
+        "title": "Dial temperature and pressure, watch the phase respond.",
+        "lede": "Students see an immediate response in the blob and the live metrics every time you nudge temperature or pressure. Use it to debate latent heat, triple points, or why pressure cookers boil higher.",
+        "placeholder_pill": "Includes guided teacher prompts",
+        "current_phase": "Current Phase",
+        "density": "Density",
+        "energy": "Energy",
+        "temperature": "Temperature",
+        "pressure": "Pressure",
+        "phase_indicator": "Phase indicator updates with every slider move.",
+        "browse_others": "Browse other experiments",
+        "scene_hint": "Three.js scene reacts to your slider inputs.",
+        "teacher_prompts": {
+          "eyebrow": "Teacher prompts",
+          "title": "Turn slider moves into a think-pair-share moment.",
+          "tips": [
+            "Use the sliders to move across the phase boundary and ask students to predict before revealing.",
+            "Pause at 100°C to discuss latent heat—temperature stays pinned while phase shifts.",
+            "Switch pressure to >2.4 atm and highlight how the boiling point climbs noticeably."
+          ]
+        },
+        "demo_nuggets": {
+          "eyebrow": "Demo nuggets",
+          "title": "Lean on numbers when curiosity spikes.",
+          "facts": [
+            "Water’s triple point occurs at 0.01°C and 0.006 atm—a tricky scenario that requires vacuum chambers.",
+            "Latent heat of vaporization is roughly 2260 kJ/kg, far larger than fusion (334 kJ/kg).",
+            "High-pressure cooking works because steam cannot form until the liquid becomes much hotter."
+          ]
+        },
+        "phases": {
+          "ice": {
+            "label": "Solid (Ice)",
+            "description": "Hydrogen bonds lock molecules into a lattice. Vibrations slow, density rises, and vapor almost disappears."
+          },
+          "liquid": {
+            "label": "Liquid",
+            "description": "Molecules slip past each other; density peaks and surface tension plays a starring role in every lab demo."
+          },
+          "vapor": {
+            "label": "Gas (Vapor)",
+            "description": "Particles zip apart, filling any container. Pressure dominates behavior and convection cells ignite."
+          }
+        }
+      },
+      "refraction_lab": {
+        "title": "Light Refraction Tank",
+        "back_to_lab": "Back to Lab",
+        "drag_hint": "Drag to rotate • Scroll to zoom",
+        "incident_angle": "Incident Angle",
+        "medium_1": "Medium 1 (Top)",
+        "medium_2": "Medium 2 (Bottom)",
+        "index_n": "Index (n) =",
+        "tir": "Total Internal Reflection",
+        "materials": {
+          "Air": "Air",
+          "Water": "Water",
+          "Glass": "Glass",
+          "Diamond": "Diamond"
+        }
       }
     }
   },

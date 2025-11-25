@@ -52,7 +52,7 @@ export default function BrowserMenu({ items }: BrowserMenuProps) {
       taglineSpacer: false,
       links: [
         { label: t('browser_menu.contact.email'), description: 'support@edulab3d.tech', descriptionSpacer: true, href: 'mailto:support@edulab3d.tech', external: true},
-        { label: 'GitHub', description: 'Open source repo & issues.', descriptionSpacer: true ,href: 'https://github.com/EduLab3D/EduLab3D', external: true },
+        { label: t('browser_menu.contact.github'), description: t('browser_menu.contact.github_desc'), descriptionSpacer: true ,href: 'https://github.com/EduLab3D/EduLab3D', external: true },
       ],
     },
   ]
@@ -62,10 +62,10 @@ export default function BrowserMenu({ items }: BrowserMenuProps) {
   return (
     <section className="browser-menu" aria-label="Browse EduLab3D">
       <div className="browser-menu__heading">
-        <p className="browser-menu__eyebrow">Quick navigation</p>
-        <h2 className="browser-menu__title">Browse the lab menu</h2>
+        <p className="browser-menu__eyebrow">{t('browser_menu.heading.eyebrow')}</p>
+        <h2 className="browser-menu__title">{t('browser_menu.heading.title')}</h2>
         <p className="browser-menu__subtitle">
-          Jump into the sections you visit the most. Each card reveals focused shortcuts so you can get moving faster.
+          {t('browser_menu.heading.subtitle')}
         </p>
       </div>
 

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import './LanguageSwitcher.css';
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
@@ -58,24 +59,10 @@ export default function LanguageSwitcher() {
   }, []);
 
   return (
-    <div className="language-switcher" style={{ position: 'relative' }}>
+    <div className="language-switcher">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="nav-link"
-        style={{
-          background: 'rgba(255, 255, 255, 0.1)',
-          border: '1px solid rgba(255, 255, 255, 0.2)',
-          borderRadius: '20px',
-          cursor: 'pointer',
-          fontSize: '0.9rem',
-          fontWeight: 500,
-          padding: '0.4rem 0.8rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          color: 'white',
-          transition: 'all 0.2s ease'
-        }}
+        className="language-btn"
         aria-label="Switch Language"
         aria-expanded={isOpen}
       >
@@ -96,60 +83,32 @@ export default function LanguageSwitcher() {
         </svg>
       </button>
 
-      <div style={{
-        position: 'absolute',
-        top: '120%',
-        right: 0,
-        background: '#1a1a1a',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '12px',
-        padding: '0.5rem',
-        minWidth: '160px',
-        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
-        zIndex: 100,
-        display: isOpen ? 'flex' : 'none',
-        flexDirection: 'column',
-        gap: '0.2rem'
-      }}>
-        {languages.map((lang) => (
-          <button
-            key={lang.code}
-            onClick={() => handleLanguageChange(lang.code)}
-            style={{
-              background: activeLang === lang.code ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '0.6rem 1rem',
-              color: 'white',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.8rem',
-              textAlign: 'left',
-              fontSize: '0.9rem',
-              transition: 'background 0.2s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)'}
-            onMouseLeave={(e) => e.currentTarget.style.background = activeLang === lang.code ? 'rgba(255, 255, 255, 0.1)' : 'transparent'}
-          >
-            <span style={{ fontSize: '1.2rem' }}>{lang.flag}</span>
-            <span>{lang.label}</span>
-          </button>
-        ))}
-        
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '0.3rem 0' }} />
-        
-        <div style={{ padding: '0 0.5rem' }}>
-          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '0.2rem' }}>More languages</span>
-          <div 
-            id="google_translate_element" 
-            style={{ 
-              // We hide the default google widget styling a bit to make it fit
-              minHeight: '20px'
-            }} 
-          />
+      {isOpen && (
+        <div className="language-dropdown">
+          {languages.map((lang) => (
+            <button
+              key={lang.code}
+              onClick={() => handleLanguageChange(lang.code)}
+              className={`language-option ${activeLang === lang.code ? 'active' : ''}`}
+            >
+              <span style={{ fontSize: '1.2rem' }}>{lang.flag}</span>
+              <span>{lang.label}</span>
+            </button>
+          ))}
+          
+          <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', margin: '0.3rem 0' }} />
+          
+          <div style={{ padding: '0 0.5rem' }}>
+            <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', display: 'block', marginBottom: '0.2rem' }}>More languages</span>
+            <div 
+              id="google_translate_element" 
+              style={{ 
+                minHeight: '20px'
+              }} 
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

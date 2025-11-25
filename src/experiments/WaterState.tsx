@@ -3,18 +3,7 @@ import { Link } from 'react-router-dom'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { ContactShadows, Environment, OrbitControls } from '@react-three/drei'
 import { IcosahedronGeometry, Vector3, type Group, type Mesh } from 'three'
-
-const WATER_TIPS = [
-  'Use the sliders to move across the phase boundary and ask students to predict before revealing.',
-  'Pause at 100°C to discuss latent heat—temperature stays pinned while phase shifts.',
-  'Switch pressure to >2.4 atm and highlight how the boiling point climbs noticeably.'
-]
-
-const WATER_FACTS = [
-  'Water’s triple point occurs at 0.01°C and 0.006 atm—a tricky scenario that requires vacuum chambers.',
-  'Latent heat of vaporization is roughly 2260 kJ/kg, far larger than fusion (334 kJ/kg).',
-  'High-pressure cooking works because steam cannot form until the liquid becomes much hotter.'
-]
+import { useTranslation } from 'react-i18next'
 
 const PHASE_THRESHOLD = {
   minTemp: -40,
@@ -57,9 +46,7 @@ const PHASE_ANIMATION: Record<PhaseState, {
   },
 }
 
-const WATER_PHASES: Record<WaterPhaseId, {
-  label: string
-  description: string
+const WATER_PHASES_DATA: Record<WaterPhaseId, {
   color: string
   vaporIntensity: number
   density: string
@@ -67,8 +54,6 @@ const WATER_PHASES: Record<WaterPhaseId, {
   state: PhaseState
 }> = {
   ice: {
-    label: 'Solid (Ice)',
-    description: 'Hydrogen bonds lock molecules into a lattice. Vibrations slow, density rises, and vapor almost disappears.',
     color: '#4be5ff',
     vaporIntensity: 0.05,
     density: '0.92 g/cm³',
@@ -76,8 +61,6 @@ const WATER_PHASES: Record<WaterPhaseId, {
     state: 'solid',
   },
   liquid: {
-    label: 'Liquid',
-    description: 'Molecules slip past each other; density peaks and surface tension plays a starring role in every lab demo.',
     color: '#4be5ff',
     vaporIntensity: 0.2,
     density: '0.997 g/cm³',
@@ -85,8 +68,6 @@ const WATER_PHASES: Record<WaterPhaseId, {
     state: 'liquid',
   },
   vapor: {
-    label: 'Gas (Vapor)',
-    description: 'Particles zip apart, filling any container. Pressure dominates behavior and convection cells ignite.',
     color: '#4be5ff',
     vaporIntensity: 0.45,
     density: '0.0006 g/cm³',
@@ -111,7 +92,7 @@ const useWaterPhase = () => {
   const [temperature, setTemperature] = useState(24)
   const [pressure, setPressure] = useState(1)
   const phaseId = useMemo(() => resolveWaterPhase(temperature, pressure), [temperature, pressure])
-  const phase = WATER_PHASES[phaseId]
+  const phase = WATER_PHASES_DATA[phaseId]
 
   return {
     temperature,
@@ -123,23 +104,26 @@ const useWaterPhase = () => {
   }
 }
 
-const WaterPhaseCard = ({ phase }: { phase: (typeof WATER_PHASES)[WaterPhaseId] }) => (
-  <div className="water-phase__card">
-    <p className="water-phase__eyebrow">Current Phase</p>
-    <h2 className="water-phase__title">{phase.label}</h2>
-    <p className="water-phase__copy">{phase.description}</p>
-    <div className="water-phase__data">
-      <div>
-        <p>Density</p>
-        <strong>{phase.density}</strong>
-      </div>
-      <div>
-        <p>Energy</p>
-        <strong>{phase.enthalpy}</strong>
+const WaterPhaseCard = ({ phaseId, phase }: { phaseId: WaterPhaseId, phase: typeof WATER_PHASES_DATA[WaterPhaseId] }) => {
+  const { t } = useTranslation()
+  return (
+    <div className="water-phase__card">
+      <p className="water-phase__eyebrow">{t('water_state.current_phase')}</p>
+      <h2 className="water-phase__title">{t(`water_state.phases.${phaseId}.label`)}</h2>
+      <p className="water-phase__copy">{t(`water_state.phases.${phaseId}.description`)}</p>
+      <div className="water-phase__data">
+        <div>
+          <p>{t('water_state.density')}</p>
+          <strong>{phase.density}</strong>
+        </div>
+        <div>
+          <p>{t('water_state.energy')}</p>
+          <strong>{phase.enthalpy}</strong>
+        </div>
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 const WaterControls = ({
   temperature,
@@ -151,61 +135,72 @@ const WaterControls = ({
   pressure: number
   setTemperature: (value: number) => void
   setPressure: (value: number) => void
-}) => (
-  <div className="water-controls">
-    <label>
-      <span>Temperature ({temperature.toFixed(0)}°C)</span>
-      <input
-        type="range"
-        min={PHASE_THRESHOLD.minTemp}
-        max={PHASE_THRESHOLD.maxTemp}
-        value={temperature}
-        onChange={(event) => setTemperature(Number(event.target.value))}
-      />
-    </label>
-    <label>
-      <span>Pressure ({pressure.toFixed(2)} atm)</span>
-      <input
-        type="range"
-        min={PHASE_THRESHOLD.minPressure}
-        max={PHASE_THRESHOLD.maxPressure}
-        step="0.05"
-        value={pressure}
-        onChange={(event) => setPressure(Number(event.target.value))}
-      />
-    </label>
-  </div>
-)
+}) => {
+  const { t } = useTranslation()
+  return (
+    <div className="water-controls">
+      <label>
+        <span>{t('water_state.temperature')} ({temperature.toFixed(0)}°C)</span>
+        <input
+          type="range"
+          min={PHASE_THRESHOLD.minTemp}
+          max={PHASE_THRESHOLD.maxTemp}
+          value={temperature}
+          onChange={(event) => setTemperature(Number(event.target.value))}
+        />
+      </label>
+      <label>
+        <span>{t('water_state.pressure')} ({pressure.toFixed(2)} atm)</span>
+        <input
+          type="range"
+          min={PHASE_THRESHOLD.minPressure}
+          max={PHASE_THRESHOLD.maxPressure}
+          step="0.05"
+          value={pressure}
+          onChange={(event) => setPressure(Number(event.target.value))}
+        />
+      </label>
+    </div>
+  )
+}
 
-const TeachingTips = () => (
-  <section className="water-section">
-    <header>
-      <p className="section-eyebrow">Teacher prompts</p>
-      <h3>Turn slider moves into a think-pair-share moment.</h3>
-    </header>
-    <ul>
-      {WATER_TIPS.map((tip) => (
-        <li key={tip}>{tip}</li>
-      ))}
-    </ul>
-  </section>
-)
+const TeachingTips = () => {
+  const { t } = useTranslation()
+  const tips = t('water_state.teacher_prompts.tips', { returnObjects: true }) as string[]
+  return (
+    <section className="water-section">
+      <header>
+        <p className="section-eyebrow">{t('water_state.teacher_prompts.eyebrow')}</p>
+        <h3>{t('water_state.teacher_prompts.title')}</h3>
+      </header>
+      <ul>
+        {Array.isArray(tips) && tips.map((tip, index) => (
+          <li key={index}>{tip}</li>
+        ))}
+      </ul>
+    </section>
+  )
+}
 
-const WaterFacts = () => (
-  <section className="water-section">
-    <header>
-      <p className="section-eyebrow">Demo nuggets</p>
-      <h3>Lean on numbers when curiosity spikes.</h3>
-    </header>
-    <ul>
-      {WATER_FACTS.map((fact) => (
-        <li key={fact}>{fact}</li>
-      ))}
-    </ul>
-  </section>
-)
+const WaterFacts = () => {
+  const { t } = useTranslation()
+  const facts = t('water_state.demo_nuggets.facts', { returnObjects: true }) as string[]
+  return (
+    <section className="water-section">
+      <header>
+        <p className="section-eyebrow">{t('water_state.demo_nuggets.eyebrow')}</p>
+        <h3>{t('water_state.demo_nuggets.title')}</h3>
+      </header>
+      <ul>
+        {Array.isArray(facts) && facts.map((fact, index) => (
+          <li key={index}>{fact}</li>
+        ))}
+      </ul>
+    </section>
+  )
+}
 
-type PhaseConfig = (typeof WATER_PHASES)[WaterPhaseId]
+type PhaseConfig = (typeof WATER_PHASES_DATA)[WaterPhaseId]
 
 const BASE_GEOMETRY = new IcosahedronGeometry(0.9, 3)
 const BASE_POSITIONS = BASE_GEOMETRY.attributes.position.array as Float32Array
@@ -327,35 +322,35 @@ function ThermalPlate() {
 }
 
 export default function WaterStatePage() {
-  const { temperature, pressure, phase, setTemperature, setPressure } = useWaterPhase()
+  const { t } = useTranslation()
+  const { temperature, pressure, phase, phaseId, setTemperature, setPressure } = useWaterPhase()
 
   return (
     <div className="page-shell water-page">
       <header className="page-header">
-        <span className="page-eyebrow">Water State Lab</span>
+        <span className="page-eyebrow">{t('water_state.eyebrow')}</span>
         <div className="page-header__content">
-          <h1 className="page-title">Dial temperature and pressure, watch the phase respond.</h1>
+          <h1 className="page-title">{t('water_state.title')}</h1>
           <p className="page-lede">
-            Students see an immediate response in the blob and the live metrics every time you nudge temperature or pressure. Use it to debate
-            latent heat, triple points, or why pressure cookers boil higher.
+            {t('water_state.lede')}
           </p>
         </div>
         <span className="placeholder-pill" aria-label="All experiment copy uses finalized educator prompts">
-          Includes guided teacher prompts
+          {t('water_state.placeholder_pill')}
         </span>
       </header>
 
       <section className="water-lab__grid">
         <article className="glass-panel water-lab__panel">
-          <WaterPhaseCard phase={phase} />
+          <WaterPhaseCard phaseId={phaseId} phase={phase} />
 
           <div className="water-metrics">
             <div className="water-metric">
-              <p>Temperature</p>
+              <p>{t('water_state.temperature')}</p>
               <strong>{temperature.toFixed(0)}°C</strong>
             </div>
             <div className="water-metric">
-              <p>Pressure</p>
+              <p>{t('water_state.pressure')}</p>
               <strong>{pressure.toFixed(2)} atm</strong>
             </div>
           </div>
@@ -363,9 +358,9 @@ export default function WaterStatePage() {
           <WaterControls temperature={temperature} pressure={pressure} setTemperature={setTemperature} setPressure={setPressure} />
 
           <div className="water-phase__legend">
-            <span className="water-phase__pill">Phase indicator updates with every slider move.</span>
+            <span className="water-phase__pill">{t('water_state.phase_indicator')}</span>
             <Link to="/experiments" className="water-phase__cta">
-              Browse other experiments ↗
+              {t('water_state.browse_others')} ↗
             </Link>
           </div>
         </article>
@@ -385,7 +380,7 @@ export default function WaterStatePage() {
               <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2.2} minPolarAngle={0.3} />
             </Canvas>
           </div>
-          <p className="water-lab__hint">Three.js scene reacts to your slider inputs.</p>
+          <p className="water-lab__hint">{t('water_state.scene_hint')}</p>
         </article>
       </section>
 

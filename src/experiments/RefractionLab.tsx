@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Html, Line, Environment, ContactShadows, Float, Stars } from '@react-three/drei'
 import * as THREE from 'three'
+import { useTranslation } from 'react-i18next'
 import '../App.css'
 
-const MATERIALS = [
-  { name: 'Air', n: 1.00, color: '#ffffff', opacity: 0.1 },
-  { name: 'Water', n: 1.33, color: '#38bdf8', opacity: 0.4 },
-  { name: 'Glass', n: 1.50, color: '#a855f7', opacity: 0.6 },
-  { name: 'Diamond', n: 2.42, color: '#e2e8f0', opacity: 0.8 },
+const MATERIALS_DATA = [
+  { id: 'Air', n: 1.00, color: '#ffffff', opacity: 0.1 },
+  { id: 'Water', n: 1.33, color: '#38bdf8', opacity: 0.4 },
+  { id: 'Glass', n: 1.50, color: '#a855f7', opacity: 0.6 },
+  { id: 'Diamond', n: 2.42, color: '#e2e8f0', opacity: 0.8 },
 ]
 
 function LaserBeam({ start, end, color = '#f43f5e', opacity = 1, width = 3 }: { start: THREE.Vector3, end: THREE.Vector3, color?: string, opacity?: number, width?: number }) {
@@ -76,6 +77,7 @@ function Label({ position, target, children, color = 'white' }: { position: [num
 }
 
 function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
+  const { t } = useTranslation()
   const { theta2, isTIR, reflectance } = useMemo(() => {
     const theta1Rad = (angle * Math.PI) / 180
     const sinTheta2 = (n1 * Math.sin(theta1Rad)) / n2
@@ -114,7 +116,7 @@ function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
     0
   )
 
-  const mat2 = MATERIALS.find(m => m.n === n2) || MATERIALS[1]
+  const mat2 = MATERIALS_DATA.find(m => m.n === n2) || MATERIALS_DATA[1]
 
   // --- New Ray Tracing Logic ---
   const blockHeight = 3
@@ -252,7 +254,7 @@ function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
         start={origin} 
         end={reflectVec} 
         opacity={Math.min(1, 0.2 + reflectance * 1.5)} 
-        width={2 + reflectance * 8} 
+        width={3} 
       />
 
       {/* Normal Line */}
@@ -293,7 +295,7 @@ function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
       
       {isTIR && (
         <Label position={[4, 2, 0]} target={[0, 0, 0]} color="#f43f5e">
-          Total Internal Reflection
+          {t('refraction_lab.tir')}
         </Label>
       )}
 
@@ -303,6 +305,7 @@ function Scene({ n1, n2, angle }: { n1: number, n2: number, angle: number }) {
 }
 
 export default function RefractionLab() {
+  const { t } = useTranslation()
   const [n1, setN1] = useState(1.00)
   const [n2, setN2] = useState(1.33)
   const [angle, setAngle] = useState(45)
@@ -339,7 +342,7 @@ export default function RefractionLab() {
           pointerEvents: 'none',
           userSelect: 'none'
         }}>
-          Drag to rotate • Scroll to zoom
+          {t('refraction_lab.drag_hint')}
         </div>
       </div>
 
@@ -350,9 +353,9 @@ export default function RefractionLab() {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            Back to Lab
+            {t('refraction_lab.back_to_lab')}
           </Link>
-          <h1 style={{ margin: 0, fontSize: '2.5rem', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>Light Refraction Tank</h1>
+          <h1 style={{ margin: 0, fontSize: '2.5rem', textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}>{t('refraction_lab.title')}</h1>
         </header>
 
         {/* Controls Panel */}
@@ -376,18 +379,19 @@ export default function RefractionLab() {
           boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
         }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 600 }}>Incident Angle</label>
+            <label style={{ display: 'block', marginBottom: '0.5rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 600 }}>{t('refraction_lab.incident_angle')}</label>
             <input 
               type="range" 
               min="0" 
-              max="89" 
+              max="90" 
+              step="0.1"
               value={angle} 
               onChange={(e) => setAngle(Number(e.target.value))}
               style={{ width: '100%', accentColor: '#c084fc', height: '6px', borderRadius: '3px', cursor: 'pointer' }}
             />
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.3rem' }}>
               <span>0°</span>
-              <span style={{ color: '#c084fc', fontWeight: 600 }}>{angle}°</span>
+              <span style={{ color: '#c084fc', fontWeight: 600 }}>{angle.toFixed(1)}°</span>
               <span>90°</span>
             </div>
           </div>
@@ -395,16 +399,16 @@ export default function RefractionLab() {
           <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)' }} />
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.8rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 600 }}>Medium 1 (Top)</label>
+            <label style={{ display: 'block', marginBottom: '0.8rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 600 }}>{t('refraction_lab.medium_1')}</label>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-              {MATERIALS.map((m) => (
+              {MATERIALS_DATA.map((m) => (
                 <button
-                  key={m.name}
+                  key={m.id}
                   onClick={() => setN1(m.n)}
                   className={`experiments-page__filter ${n1 === m.n ? 'is-active' : ''}`}
                   style={{ fontSize: '0.75rem', padding: '0.3rem 0.8rem' }}
                 >
-                  {m.name}
+                  {t(`refraction_lab.materials.${m.id}`)}
                 </button>
               ))}
             </div>
@@ -417,20 +421,20 @@ export default function RefractionLab() {
               onChange={(e) => setN1(Number(e.target.value))}
               style={{ width: '100%', accentColor: '#c084fc', height: '6px', borderRadius: '3px', cursor: 'pointer' }}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.3rem' }}>Index (n) = {n1.toFixed(2)}</div>
+            <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.3rem' }}>{t('refraction_lab.index_n')} {n1.toFixed(2)}</div>
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '0.8rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 600 }}>Medium 2 (Bottom)</label>
+            <label style={{ display: 'block', marginBottom: '0.8rem', color: 'rgba(255,255,255,0.8)', fontSize: '0.9rem', fontWeight: 600 }}>{t('refraction_lab.medium_2')}</label>
             <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-              {MATERIALS.map((m) => (
+              {MATERIALS_DATA.map((m) => (
                 <button
-                  key={m.name}
+                  key={m.id}
                   onClick={() => setN2(m.n)}
                   className={`experiments-page__filter ${n2 === m.n ? 'is-active' : ''}`}
                   style={{ fontSize: '0.75rem', padding: '0.3rem 0.8rem' }}
                 >
-                  {m.name}
+                  {t(`refraction_lab.materials.${m.id}`)}
                 </button>
               ))}
             </div>
@@ -443,7 +447,7 @@ export default function RefractionLab() {
               onChange={(e) => setN2(Number(e.target.value))}
               style={{ width: '100%', accentColor: '#38bdf8', height: '6px', borderRadius: '3px', cursor: 'pointer' }}
             />
-            <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.3rem' }}>Index (n) = {n2.toFixed(2)}</div>
+            <div style={{ textAlign: 'right', fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)', marginTop: '0.3rem' }}>{t('refraction_lab.index_n')} {n2.toFixed(2)}</div>
           </div>
         </div>
       </div>
