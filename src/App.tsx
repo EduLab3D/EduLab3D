@@ -8,6 +8,7 @@ import LanguageSwitcher from './components/LanguageSwitcher'
 
 const RefractionLab = lazy(() => import('./experiments/RefractionLab'))
 const WaterStatePage = lazy(() => import('./experiments/WaterState'))
+const BoylesLaw = lazy(() => import('./experiments/BoylesLaw'))
 const AboutPage = lazy(() => import('./pages/About'))
 const CreatorsPage = lazy(() => import('./pages/Creators'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -25,15 +26,15 @@ type Experiment = {
 }
 
 const EXPERIMENTS: Experiment[] = [
-    {
-        id: 'state-changes',
-        title: "Water State Changes",
-        summary: 'Dial temperature and pressure to observe water shifting between ice, liquid, and vapor in real time.',
-        level: 'Beginner',
-        duration: '7 min',
-        focus: 'Thermodynamics',
-        tags: ['Phase change', 'Latent heat'],
-    },
+  {
+      id: 'state-changes',
+      title: "Water State Changes",
+      summary: 'Dial temperature and pressure to observe water shifting between ice, liquid, and vapor in real time.',
+      level: 'Beginner',
+      duration: '7 min',
+      focus: 'Thermodynamics',
+      tags: ['Phase change', 'Latent heat'],
+  },
   {
     id: 'boyles-law',
     title: "Boyle's Law Piston",
@@ -316,6 +317,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/experiments" element={<ExperimentsPage />} />
           <Route path="/experiments/refraction-lab" element={<RefractionLab />} />
+          <Route path="/experiments/boyles-law" element={<BoylesLaw />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/creators" element={<CreatorsPage />} />
           <Route path="*" element={<NotFound />} />

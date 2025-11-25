@@ -190,6 +190,20 @@ const resources = {
           "Glass": "Glass",
           "Diamond": "Diamond"
         }
+      },
+      "boyle_lab": {
+        "title": "Boyle's Law Piston",
+        "subtitle": "Slide the piston to compress or expand a sealed chamber and highlight the inverse relationship between pressure and volume.",
+        "back_to_lab": "Back to Lab",
+        "drag_hint": "Drag to orbit • Scroll to zoom",
+        "piston_label": "Piston position",
+        "length_readout": "{{value}} cm",
+        "pressure_label": "Pressure",
+        "pressure_value": "{{value}} atm",
+        "volume_label": "Volume",
+        "volume_value": "{{value}} mL",
+        "molecules_caption": "Particles speed up as the chamber shrinks.",
+        "description": "Keep temperature constant and show that doubling the pressure halves the volume. Use the molecules as a visual cue for kinetic energy."
       }
     }
   },
@@ -307,6 +321,20 @@ const resources = {
         "subtitle": "공허 속에서 길을 잃으셨나요?",
         "desc": "찾으시는 페이지가 블랙홀로 빨려 들어갔습니다.",
         "back_home": "안전한 곳으로 돌아가기"
+      },
+      "boyle_lab": {
+        "title": "보일의 법칙 피스톤",
+        "subtitle": "피스톤을 눌러 밀폐 용적을 조절하며 압력과 부피가 반비례함을 시각적으로 보여주세요.",
+        "back_to_lab": "실험 목록으로",
+        "drag_hint": "드래그로 회전 · 스크롤로 확대/축소",
+        "piston_label": "피스톤 위치",
+        "length_readout": "{{value}} cm",
+        "pressure_label": "압력",
+        "pressure_value": "{{value}} 기압",
+        "volume_label": "부피",
+        "volume_value": "{{value}} mL",
+        "molecules_caption": "용적이 줄어들수록 분자 속도가 빨라집니다.",
+        "description": "온도를 일정하게 유지한 상태에서 압력을 두 배로 하면 부피가 절반이 되는 모습을 학생들과 함께 확인하세요."
       }
     }
   },
@@ -424,6 +452,20 @@ const resources = {
         "subtitle": "虚空で迷子になりましたか？",
         "desc": "お探しの実験はブラックホールに吸い込まれました。",
         "back_home": "安全な場所に戻る"
+      },
+      "boyle_lab": {
+        "title": "ボイルの法則ピストン",
+        "subtitle": "ピストンを動かして密閉シリンダーを圧縮・膨張させ、圧力と体積の反比例を一目で示します。",
+        "back_to_lab": "実験一覧へ戻る",
+        "drag_hint": "ドラッグで回転 ・ スクロールでズーム",
+        "piston_label": "ピストン位置",
+        "length_readout": "{{value}} cm",
+        "pressure_label": "圧力",
+        "pressure_value": "{{value}} atm",
+        "volume_label": "体積",
+        "volume_value": "{{value}} mL",
+        "molecules_caption": "容器が小さくなるほど粒子は速く弾みます。",
+        "description": "温度を一定に保ったまま、圧力を変えると体積がどのように逆に変化するかを視覚的に体験できます。"
       }
     }
   },
@@ -541,6 +583,20 @@ const resources = {
         "subtitle": "迷失在虚空中？",
         "desc": "您寻找的实验已飘入黑洞。",
         "back_home": "返回安全地带"
+      },
+      "boyle_lab": {
+        "title": "波义耳定律活塞",
+        "subtitle": "滑动活塞来压缩或扩张密闭气缸，直观展示压力与体积的反比关系。",
+        "back_to_lab": "返回实验目录",
+        "drag_hint": "拖动旋转 · 滚轮缩放",
+        "piston_label": "活塞位置",
+        "length_readout": "{{value}} cm",
+        "pressure_label": "压力",
+        "pressure_value": "{{value}} atm",
+        "volume_label": "体积",
+        "volume_value": "{{value}} mL",
+        "molecules_caption": "腔体越小，分子的弹跳速度越快。",
+        "description": "在温度恒定的情况下说明压力加倍时体积减半，让学生直观感受 PV=常数。"
       }
     }
   },
@@ -658,6 +714,20 @@ const resources = {
         "subtitle": "¿Perdido en el vacío?",
         "desc": "El experimento que buscas ha drifted hacia un agujero negro.",
         "back_home": "Regresar a la seguridad"
+      },
+      "boyle_lab": {
+        "title": "Pistón de la Ley de Boyle",
+        "subtitle": "Mueve el pistón para comprimir o expandir una cámara sellada y mostrar cómo la presión y el volumen se comportan de manera inversa.",
+        "back_to_lab": "Volver al catálogo",
+        "drag_hint": "Arrastra para orbitar · Haz scroll para acercar",
+        "piston_label": "Posición del pistón",
+        "length_readout": "{{value}} cm",
+        "pressure_label": "Presión",
+        "pressure_value": "{{value}} atm",
+        "volume_label": "Volumen",
+        "volume_value": "{{value}} mL",
+        "molecules_caption": "Cuando reduces el volumen, las moléculas rebotan con más energía.",
+        "description": "Mantén la temperatura constante y deja que los estudiantes vean que duplicar la presión reduce la mitad del volumen: PV se mantiene constante."
       }
     }
   }
