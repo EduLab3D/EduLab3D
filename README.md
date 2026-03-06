@@ -2,7 +2,7 @@
 # Edulab3D, The open source website for science experiments
 <div align="center">
 
-<img src="https://avatars.githubusercontent.com/u/231421888?s=200&v=4" width="120" style="border-radius: 50%;" />
+<img src="https://avatars.githubusercontent.com/u/231421888?s=200&v=4" width="120" style="border-radius: 50%;" alt="EduLab3D avatar" />
 
 # Edulab3D From Jungheung Middle School
 
