@@ -8,7 +8,7 @@
 
 Student-led technology and multimedia team at **[Jungheung Middle School](https://jh-m.goebc.kr)**, South Korea.
 
-We maintain school-wide digital platforms, create engaging multimedia content, and provide essential support for major school events and operations from Backprogress_jh school club.
+We maintain school-wide digital platforms, create engaging multimedia content, and provide essential support for major school events and operations as part of the `Backprogress_jh` school club.
 
 <a href="#">
   <img src="https://skillicons.dev/icons?i=ts,python,react,vite,nextjs,npm,github,tailwind,docker,cloudflare,figma,discord,ubuntu,windows,apple&perline=15" height="36" alt="Tech Stack" />
